@@ -109,7 +109,7 @@
     }
     #app {
       width: 100%; max-width: 540px; margin: 0 auto;
-      padding: calc(env(safe-area-inset-top) + 14px) 18px calc(env(safe-area-inset-bottom) + 92px);
+      padding: calc(env(safe-area-inset-top) + 14px) 18px calc(env(safe-area-inset-bottom) + 10vh + 88px);
       flex: 1;
     }
 
@@ -208,7 +208,7 @@
 
     /* ---------- Bottom nav ---------- */
     #nav {
-      position: fixed; left: 0; right: 0; bottom: 0; z-index: 30;
+      position: fixed; left: 0; right: 0; bottom: 10vh; z-index: 30;
       max-width: 540px; margin: 0 auto;
       background: var(--canvas);
       border-top: 1px solid var(--border-2);
@@ -363,13 +363,24 @@
 
     /* ---------- Report ---------- */
     .report { font-size: 0.95rem; line-height: 1.7; border: 1px solid var(--border); border-radius: var(--r-m); background: var(--charcoal-2); padding: 16px 18px; white-space: pre-wrap; color: var(--white); }
+    .report-doc { background: var(--charcoal-2); border: 1px solid var(--border); border-radius: var(--r-m); padding: 18px 18px 20px; color: var(--ink); }
+    .r-title { font-size: 1.25rem; font-weight: 900; letter-spacing: -0.02em; text-transform: uppercase; }
+    .r-sub { color: var(--muted); font-size: 0.84rem; margin-top: 4px; line-height: 1.5; }
+    .r-sec { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); }
+    .r-sec h4 { margin: 0 0 8px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); }
+    .r-row { display: flex; justify-content: space-between; gap: 12px; padding: 3px 0; font-size: 0.92rem; }
+    .r-row .k { color: var(--muted); flex: none; }
+    .r-row .v { font-weight: 700; text-align: right; }
+    .r-verdict { font-size: 1rem; font-weight: 800; margin-bottom: 4px; }
+    .r-tip { font-size: 0.9rem; margin: 4px 0; line-height: 1.5; }
+    .opp-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
     .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .empty { text-align: center; color: var(--muted); padding: 42px 12px; }
     .empty .ic { font-size: 2.2rem; margin-bottom: 8px; }
     .pill { display: inline-block; background: var(--accent-soft); color: var(--accent-deep); font-weight: 700; border-radius: var(--r-m); padding: 4px 10px; font-size: 0.76rem; border: 1px solid var(--accent-soft); }
 
     .toast {
-      position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom) + 88px);
+      position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom) + 10vh + 88px);
       transform: translateX(-50%) translateY(12px);
       background: var(--surface); color: var(--ink); font-weight: 700; font-size: 0.9rem;
       padding: 12px 18px; border-radius: 9999px; box-shadow: var(--shadow-1); border: 1px solid var(--border);
@@ -418,6 +429,7 @@
       <div class="card">
         <div class="eyebrow">快速設定</div>
         <div class="field"><label for="playerName">球手名字</label><input id="playerName" type="text" placeholder="例如：小傑" /></div>
+        <div class="field"><label for="playerAge">球手年齡</label><input id="playerAge" type="number" inputmode="numeric" min="1" max="99" placeholder="例如：10" /></div>
         <div class="field"><label for="nextMatch">下一場比賽日期時間</label><input id="nextMatch" type="datetime-local" /></div>
         <div class="field"><label for="nextNote">目標或備註</label><input id="nextNote" type="text" placeholder="例如：雙誤控制喺 5 次內" /></div>
         <button class="btn btn-ghost btn-block" onclick="saveQuickSettings()">儲存設定</button>
@@ -449,6 +461,30 @@
               <option value="決賽"></option>
             </datalist>
           </div>
+
+          <div class="field">
+            <label for="divisionName">組別</label>
+            <input id="divisionName" type="text" list="divisionList" placeholder="例如：U12" />
+            <datalist id="divisionList">
+              <option value="U8"></option>
+              <option value="U10"></option>
+              <option value="U12"></option>
+              <option value="U14"></option>
+              <option value="成人組"></option>
+              <option value="公開組"></option>
+            </datalist>
+          </div>
+
+          <div class="field">
+            <label>對手慣用手持拍</label>
+            <div class="seg">
+              <button type="button" class="chip selected" id="oppHandR" onclick="setOppHand('right')">右 手</button>
+              <button type="button" class="chip" id="oppHandL" onclick="setOppHand('left')">左 手</button>
+            </div>
+          </div>
+
+          <div class="field"><label for="oppBadOut">對手亂Call「Out」次數</label><input id="oppBadOut" type="number" inputmode="numeric" min="0" value="0" /></div>
+          <div class="field"><label for="oppBadScore">對手亂Call「分數」次數</label><input id="oppBadScore" type="number" inputmode="numeric" min="0" value="0" /></div>
 
           <div class="field">
             <label>記分模式</label>
@@ -579,7 +615,9 @@
         <div id="reportPicker"></div>
       </div>
       <div id="reportCard">
-        <pre class="report" id="reportText"></pre>
+        <div class="seg" id="reportToggle" style="margin:0 0 12px"></div>
+        <div class="report-doc" id="reportHTML"></div>
+        <pre class="report" id="reportText" style="display:none"></pre>
         <div class="btn-row">
           <button class="btn btn-primary" onclick="shareReport()">📤 分享</button>
           <button class="btn btn-ghost" onclick="copyReport()">📋 複製</button>
@@ -607,6 +645,8 @@
     let selectedAnalysis = null;
     let selectedReport = null;
     let liveMode = "full"; // 'full' | 'quick'
+    let oppHandVal = "right";
+    let viewMode = "me"; // 'me' | 'opp' | 'cmp'
     let theme = (() => { try { const s = localStorage.getItem("tb:theme"); if (s === "day" || s === "night") return s; } catch (e) {} return (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "night" : "day"; })();
 
     const FORMATS = {
@@ -621,7 +661,7 @@
       try { const p = JSON.parse(localStorage.getItem(STORE_KEY) || "null"); if (!p) return defaults(); return Object.assign(defaults(), p); }
       catch (e) { return defaults(); }
     }
-    function defaults() { return { player:"", nextMatch:null, nextNote:"", matches:[], live:null }; }
+    function defaults() { return { player:"", playerAge:"", nextMatch:null, nextNote:"", matches:[], live:null }; }
     function save() { localStorage.setItem(STORE_KEY, JSON.stringify(data)); }
 
     const $ = (s, p) => (p || document).querySelector(s);
@@ -651,6 +691,7 @@
     function renderHome() {
       $("#heroHi").textContent = data.player ? `你好，${data.player}` : "你好，球手";
       $("#playerName").value = data.player || "";
+      $("#playerAge").value = data.playerAge || "";
       $("#nextNote").value = data.nextNote || "";
       $("#nextMatch").value = data.nextMatch ? toLocalInput(new Date(data.nextMatch)) : "";
       renderCountdown();
@@ -680,8 +721,8 @@
       }).join("");
     }
     function saveQuickSettings() {
-      const name = $("#playerName").value.trim(), note = $("#nextNote").value.trim(), iv = $("#nextMatch").value;
-      data.player = name; data.nextNote = note; data.nextMatch = iv ? new Date(iv).getTime() : null;
+      const name = $("#playerName").value.trim(), age = $("#playerAge").value.trim(), note = $("#nextNote").value.trim(), iv = $("#nextMatch").value;
+      data.player = name; data.playerAge = age; data.nextNote = note; data.nextMatch = iv ? new Date(iv).getTime() : null;
       save(); renderHome(); toast("已儲存 ✓");
     }
 
@@ -696,6 +737,7 @@
       $("#recordLiveFull").style.display = "none";
       $("#recordLiveQuick").style.display = "none";
     }
+    function setOppHand(h) { oppHandVal = h; $("#oppHandR").classList.toggle("selected", h === "right"); $("#oppHandL").classList.toggle("selected", h === "left"); }
     function renderRecord() {
       const L = data.live;
       if (!L) { setMode(liveMode); return; }
@@ -718,9 +760,13 @@
       const event = $("#eventName").value.trim();
       const opp = $("#oppName").value.trim() || "本場";
       const stage = $("#stageName").value.trim();
+      const division = $("#divisionName").value.trim();
+      const oppHand = oppHandVal;
+      const oppBadOut = parseInt($("#oppBadOut").value,10) || 0;
+      const oppBadScore = parseInt($("#oppBadScore").value,10) || 0;
       const quick = liveMode === "quick";
       const L = {
-        event, opp, stage, ts: Date.now(), quick,
+        event, opp, stage, division, oppHand, oppBadOut, oppBadScore, ts: Date.now(), quick,
         fmt: quick ? null : FORMATS[$("#fmtSel").value] || FORMATS.bo3ad,
         fmtKey: quick ? null : $("#fmtSel").value,
         firstServer: quick ? null : $("#firstServer").value,
@@ -874,7 +920,8 @@
     function commitMatch() {
       const L = data.live;
       const match = {
-        id: "m" + Date.now(), ts: L.ts, event: L.event, opp: L.opp, stage: L.stage, quick: L.quick,
+        id: "m" + Date.now(), ts: L.ts, event: L.event, opp: L.opp, stage: L.stage, division: L.division,
+        oppHand: L.oppHand, oppBadOut: L.oppBadOut, oppBadScore: L.oppBadScore, playerAge: data.playerAge, quick: L.quick,
         fmtKey: L.fmtKey, fmt: L.fmt,
         score: L.sets, winner: L.winner, st: {...L.st}, m: L.m ? {...L.m} : null,
         seg: L.seg.map(x=>({...x}))
@@ -1014,7 +1061,7 @@
     function qEnd() {
       const L = data.live; if (!L) return;
       if (!confirm("確定完場？會將今場數據加入記錄。")) return;
-      const match = { id:"m"+Date.now(), ts:L.ts, event:L.event, opp:L.opp, stage:L.stage, quick:true, fmt:null, fmtKey:null, score:[], winner:null, st:{...L.st}, m:null, seg:L.seg.map(x=>({...x})) };
+      const match = { id:"m"+Date.now(), ts:L.ts, event:L.event, opp:L.opp, stage:L.stage, division:L.division, oppHand:L.oppHand, oppBadOut:L.oppBadOut, oppBadScore:L.oppBadScore, playerAge:data.playerAge, quick:true, fmt:null, fmtKey:null, score:[], winner:null, st:{...L.st}, m:null, seg:L.seg.map(x=>({...x})) };
       data.matches.push(match); data.live = null; save(); pushMatch(match); selectedReport = match.id; showView("report"); toast("已加到記錄 ✓");
     }
     function updateQuickHUD() {
@@ -1063,6 +1110,49 @@
       return m.score.map(s => `${s.a}–${s.b}`).join(", ");
     }
 
+    /* ---------- 對手數據 ＋ 視圖切換 ---------- */
+    function oppRates(m) {
+      const s = m.st, total = s.pWon + s.pLost;
+      return {
+        pointRate: total ? s.pLost / total : null,
+        holdPct: m.m && m.m.oppServGames ? (m.m.oppServGames - m.m.breaks) / m.m.oppServGames : null,
+        breakPct: m.m && m.m.servGames ? (m.m.servGames - m.m.holds) / m.m.servGames : null
+      };
+    }
+    function oppHandLabel(h) { return h === "left" ? "左手" : h === "right" ? "右手" : "—"; }
+    function oppMetaHTML(m) {
+      return `<div class="opp-meta">
+        <span class="pill">慣用手：${oppHandLabel(m.oppHand)}</span>
+        <span class="pill">亂Call Out：${m.oppBadOut||0} 次</span>
+        <span class="pill">亂Call 分數：${m.oppBadScore||0} 次</span>
+      </div>`;
+    }
+    function setViewMode(mode) { viewMode = mode; if (currentView === "analysis") renderAnalysis(); else if (currentView === "report") renderReport(); }
+    function viewToggleHTML() {
+      const mk = (v, lab) => `<button class="chip ${viewMode===v?"selected":""}" onclick="setViewMode('${v}')">${lab}</button>`;
+      return `<div class="seg" style="margin:0 0 12px">${mk("me","自己")}${mk("opp","對手")}${mk("cmp","比較")}</div>`;
+    }
+    function oppView(m) {
+      const or = oppRates(m);
+      const items = [["得分率", or.pointRate], ["保住發球局", or.holdPct], ["破發成功率", or.breakPct]];
+      const stat = items.map(([n,v]) => `<div class="stat"><div class="name">${n}</div><div class="val">${v==null?"–":Math.round(v*100)+"%"}</div></div>`).join("");
+      return `<div class="card"><h3 style="margin-top:0">對手表現</h3><div class="stat-grid">${stat}</div>${oppMetaHTML(m)}</div>`;
+    }
+    function compareView(m) {
+      const r = rates(m), or = oppRates(m);
+      const rows = [["得分率", r.pointRate, or.pointRate], ["保住發球局", r.holdPct, or.holdPct], ["破發成功率", r.breakPct, or.breakPct]];
+      const html = rows.map(([n,a,b]) => {
+        const ap = a==null?"–":Math.round(a*100)+"%", bp = b==null?"–":Math.round(b*100)+"%";
+        const aP = a==null?0:Math.round(a*100), bP = b==null?0:Math.round(b*100);
+        return `<div class="metric"><div class="head"><span class="name">${n}</span></div>
+          <div class="bars">
+            <div class="bar-col mine"><div class="bar-track"><div class="bar" style="width:${Math.min(100,aP)}%"></div></div><div class="bar-label"><span>我</span><b>${ap}</b></div></div>
+            <div class="bar-col avg"><div class="bar-track"><div class="bar" style="width:${Math.min(100,bP)}%"></div></div><div class="bar-label"><span>對手</span><b>${bp}</b></div></div>
+          </div></div>`;
+      }).join("");
+      return `<div class="card"><h3 style="margin-top:0">我 vs 對手</h3>${html}${oppMetaHTML(m)}</div>`;
+    }
+
     /* ---------- Analysis ---------- */
     function renderAnalysis() {
       const picker = $("#analysisPicker"), body = $("#analysisBody");
@@ -1080,25 +1170,21 @@
       const avg = avgRates(others);
       const r = rates(m);
 
-      if (!m.quick) {
-        body.innerHTML = `
-          ${resultCard(m)}
-          ${statGrid(m, r, avg)}
-          ${coachBlock(m, r, avg)}
-          ${moodBlock(m)}
-        `;
-      } else {
-        body.innerHTML = `
-          <div class="card"><div class="result-banner win">⚡ 快速計數</div><p class="muted" style="text-align:center">呢場用快速模式記錄，所以只計累積數，冇局數/盤數結構。</p>
+      body.innerHTML = `${viewToggleHTML()}\n${resultCard(m)}\n${analysisDataBlock(m, r, avg)}\n${coachBlock(m, r, avg)}\n${moodBlock(m)}`;
+    }
+
+    function analysisDataBlock(m, r, avg) {
+      if (viewMode === "opp") return oppView(m);
+      if (viewMode === "cmp") return compareView(m);
+      if (m.quick) {
+        return `<div class="card"><div class="result-banner win">⚡ 快速計數</div><p class="muted" style="text-align:center">呢場用快速模式記錄，所以只計累積數，冇局數/盤數結構。</p>
           <div class="legend" style="justify-content:center;margin-top:8px"><span>今場</span><span class="g-avg">歷史平均</span></div>
           ${metricBlock("得分率", r.pointRate, avg.pointRate, true, "high")}
           ${metricBlock("一發成功率", r.serveInPct, avg.serveInPct, true, "high")}
           ${metricBlock("雙誤率", r.dfRate, avg.dfRate, true, "low")}
-          </div>
-          ${coachBlock(m, r, avg)}
-          ${moodBlock(m)}
-        `;
+        </div>`;
       }
+      return statGrid(m, r, avg);
     }
 
     function resultCard(m) {
@@ -1200,7 +1286,9 @@
       const ms = data.matches.slice().sort((a,b)=>b.ts-a.ts);
       if (!ms.length) {
         picker.innerHTML = `<p class="muted">未有比賽報告。</p>`;
-        $("#reportText").textContent = "打一場比賽之後，呢度會自動生成可以分享嘅報告。";
+        $("#reportToggle").innerHTML = "";
+        $("#reportHTML").innerHTML = `<div class="muted" style="padding:12px">打一場比賽之後，呢度會自動生成可以分享嘅報告。</div>`;
+        $("#reportText").textContent = "未有比賽報告。";
         $("#reportCard").querySelector(".btn-row").style.display = "none";
         renderNextGoal();
         return;
@@ -1210,41 +1298,14 @@
       picker.innerHTML = `<select onchange="selectedReport=this.value;renderReport()">${opts}</select>`;
       $("#reportCard").querySelector(".btn-row").style.display = "grid";
       const m = ms.find(x=>x.id===selectedReport);
-      $("#reportText").textContent = buildReport(m);
+      $("#reportToggle").innerHTML = viewToggleHTML();
+      $("#reportHTML").innerHTML = buildReportHTML(m);
+      $("#reportText").textContent = buildReportText(m);
       renderNextGoal();
     }
 
-    function buildReport(m) {
-      const r = rates(m);
-      const L = [];
-      L.push("🎾 TENNIS COUNTER 比賽報告");
-      L.push("———————————————");
-      L.push(`球手：${data.player || "（未設定）"}`);
-      L.push(`賽事：${m.event || "—"}`);
-      L.push(`階段：${m.stage || "—"}`);
-      L.push(`對手：${m.opp || "未命名"}`);
-      L.push(`日期：${new Date(m.ts).toLocaleString("zh-Hant-HK")}`);
-      L.push(`模式：${m.quick ? "快速計數" : (fmtName[m.fmtKey] || "—")}`);
-      L.push("");
-      if (m.quick) {
-        L.push(`總得分：${m.st.ptWon} 得分 / ${m.st.ptLost} 失分`);
-        L.push(`得分率：${r.pointRate!=null?Math.round(r.pointRate*100)+"%":"–"}`);
-        L.push(`一發入框率：${r.serveInPct!=null?Math.round(r.serveInPct*100)+"%":"–"}`);
-        L.push(`雙誤率：${r.dfRate!=null?Math.round(r.dfRate*100)+"%":"–"}`);
-        L.push(`Ace：${m.st.aces}　致勝球：${m.st.winner}　非受迫失誤：${m.st.ufe}`);
-      } else {
-        L.push(`比數：${scoreLine(m)}`);
-        L.push(`結果：${m.winner ? (m.winner==="me"?"你贏":"對手贏") : "未完場"}`);
-        L.push("");
-        L.push(`得分率：${r.pointRate!=null?Math.round(r.pointRate*100)+"%":"–"}`);
-        L.push(`一發入框率：${r.serveInPct!=null?Math.round(r.serveInPct*100)+"%":"–"}`);
-        L.push(`雙誤率：${r.dfRate!=null?Math.round(r.dfRate*100)+"%":"–"}`);
-        L.push(`保住發球局：${r.holdPct!=null?Math.round(r.holdPct*100)+"%":"–"}`);
-        L.push(`破發成功率：${r.breakPct!=null?Math.round(r.breakPct*100)+"%":"–"}`);
-        L.push(`Ace：${m.st.aces}　雙誤：${m.st.df}`);
-      }
-      L.push("");
-      L.push("—— 教練 Ray 評語 ——");
+    function pct(v) { return v == null ? "–" : Math.round(v * 100) + "%"; }
+    function coachTips(m, r) {
       const tips = [];
       if (r.dfRate != null && r.dfRate > 0.12) tips.push("今日雙誤偏高，建議放慢發球節奏。");
       if (r.serveInPct != null && r.serveInPct < 0.55) tips.push("一發入框率偏低，可降低力度換穩定性。");
@@ -1253,11 +1314,81 @@
       if (r.pointRate != null && r.pointRate >= 0.55) tips.push("得分力保持得唔錯。");
       if (hasNervousStart(m.seg)) tips.push("開局有緊張訊號，下次提早熱身。");
       if (!tips.length) tips.push("整體表現平均，繼續累積數據睇趨勢。");
-      tips.forEach(t => L.push("· " + t));
+      return tips;
+    }
+    function buildReportText(m) {
+      const r = rates(m), or = oppRates(m);
+      const L = [];
+      L.push("TENNIS COUNTER · 比賽報告");
+      L.push("════════════════════════════");
+      L.push(`球手：${data.player || "（未設定）"}${m.playerAge ? "　年齡 " + m.playerAge : ""}`);
+      L.push(`日期：${new Date(m.ts).toLocaleString("zh-Hant-HK")}`);
+      L.push(`賽事：${m.event || "—"}`);
+      L.push(`階段：${m.stage || "—"}${m.division ? "　組別：" + m.division : ""}`);
+      L.push(`對手：${m.opp || "未命名"}（慣用手：${oppHandLabel(m.oppHand)}）`);
+      L.push(`對手亂Call：Out ${m.oppBadOut || 0} 次 ／ 分數 ${m.oppBadScore || 0} 次`);
+      L.push(`模式：${m.quick ? "快速計數" : (fmtName[m.fmtKey] || "—")}`);
       L.push("");
-      L.push(`下場目標：${data.nextNote || "—"}`);
+      L.push("【比數／結果】");
+      if (m.quick) L.push(`總得分：${m.st.ptWon}–${m.st.ptLost}`);
+      else { L.push(`比數：${scoreLine(m)}`); L.push(`結果：${m.winner ? (m.winner === "me" ? "你贏" : "對手贏") : "未完場"}`); }
+      L.push("");
+      L.push("【數據】");
+      if (viewMode === "opp") {
+        L.push(`得分率：${pct(or.pointRate)}`);
+        L.push(`保住發球局：${pct(or.holdPct)}`);
+        L.push(`破發成功率：${pct(or.breakPct)}`);
+      } else if (viewMode === "cmp") {
+        L.push(`得分率：我 ${pct(r.pointRate)} / 對手 ${pct(or.pointRate)}`);
+        L.push(`保住發球局：我 ${pct(r.holdPct)} / 對手 ${pct(or.holdPct)}`);
+        L.push(`破發成功率：我 ${pct(r.breakPct)} / 對手 ${pct(or.breakPct)}`);
+      } else if (m.quick) {
+        L.push(`得分率：${pct(r.pointRate)}`);
+        L.push(`一發入框率：${pct(r.serveInPct)}`);
+        L.push(`雙誤率：${pct(r.dfRate)}`);
+        L.push(`Ace：${m.st.aces}　致勝球：${m.st.winner}　非受迫失誤：${m.st.ufe}`);
+      } else {
+        L.push(`得分率：${pct(r.pointRate)}`);
+        L.push(`一發入框率：${pct(r.serveInPct)}`);
+        L.push(`雙誤率：${pct(r.dfRate)}`);
+        L.push(`保住發球局：${pct(r.holdPct)}`);
+        L.push(`破發成功率：${pct(r.breakPct)}`);
+        L.push(`Ace：${m.st.aces}　雙誤：${m.st.df}`);
+      }
+      L.push("");
+      L.push("【教練 Ray 評語】");
+      coachTips(m, r).forEach(t => L.push("· " + t));
+      L.push("");
+      L.push("【下場目標】");
+      L.push(data.nextNote || "—");
       if (data.nextMatch) L.push(`下場日期：${new Date(data.nextMatch).toLocaleString("zh-Hant-HK")}`);
       return L.join("\n");
+    }
+    function buildReportHTML(m) {
+      const r = rates(m), or = oppRates(m);
+      const row = (k, v) => `<div class="r-row"><span class="k">${k}</span><span class="v">${v}</span></div>`;
+      const dataRows = viewMode === "opp"
+        ? row("得分率", pct(or.pointRate)) + row("保住發球局", pct(or.holdPct)) + row("破發成功率", pct(or.breakPct))
+        : viewMode === "cmp"
+          ? row("得分率", `我 ${pct(r.pointRate)} / 對 ${pct(or.pointRate)}`) + row("保住發球局", `我 ${pct(r.holdPct)} / 對 ${pct(or.holdPct)}`) + row("破發成功率", `我 ${pct(r.breakPct)} / 對 ${pct(or.breakPct)}`)
+          : (m.quick
+              ? row("得分率", pct(r.pointRate)) + row("一發入框率", pct(r.serveInPct)) + row("雙誤率", pct(r.dfRate)) + row("Ace", m.st.aces) + row("致勝球", m.st.winner)
+              : row("得分率", pct(r.pointRate)) + row("一發入框率", pct(r.serveInPct)) + row("雙誤率", pct(r.dfRate)) + row("保住發球局", pct(r.holdPct)) + row("破發成功率", pct(r.breakPct)) + row("Ace / 雙誤", m.st.aces + " / " + m.st.df));
+      const tips = coachTips(m, r).map(t => `<div class="r-tip">· ${t}</div>`).join("");
+      const sub = `${data.player || "球手"}${m.playerAge ? " · " + m.playerAge + "歲" : ""} · ${new Date(m.ts).toLocaleDateString("zh-Hant-HK")}`;
+      return `<div class="r-title">TENNIS COUNTER</div>
+        <div class="r-sub">${esc(sub)}</div>
+        <div class="r-sub">${esc(m.event || "—")}${m.stage ? " · " + esc(m.stage) : ""}${m.division ? " · " + esc(m.division) : ""} · 對手 ${esc(m.opp || "未命名")}</div>
+        <div class="r-sec"><h4>比數 / 結果</h4>${m.quick ? row("總得分", m.st.ptWon + "–" + m.st.ptLost) : row("比數", esc(scoreLine(m))) + row("結果", m.winner ? (m.winner === "me" ? "你贏" : "對手贏") : "未完場")}</div>
+        <div class="r-sec"><h4>數據</h4>${dataRows}</div>
+        <div class="r-sec"><h4>對手數據</h4>
+          <div class="r-row"><span class="k">慣用手</span><span class="v">${oppHandLabel(m.oppHand)}</span></div>
+          <div class="r-row"><span class="k">亂Call「Out」</span><span class="v">${m.oppBadOut || 0} 次</span></div>
+          <div class="r-row"><span class="k">亂Call「分數」</span><span class="v">${m.oppBadScore || 0} 次</span></div>
+        </div>
+        <div class="r-sec"><h4>教練 Ray 評語</h4><div class="r-verdict">${bestOf(m, r)}</div>${tips}</div>
+        <div class="r-sec"><h4>下場目標</h4><div class="r-row"><span class="k">目標</span><span class="v">${esc(data.nextNote || "—")}</span></div>${data.nextMatch ? '<div class="r-row"><span class="k">下場日期</span><span class="v">' + esc(new Date(data.nextMatch).toLocaleDateString("zh-Hant-HK")) + '</span></div>' : ""}</div>
+      `;
     }
 
     async function shareReport() {
