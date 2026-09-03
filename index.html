@@ -383,6 +383,11 @@
     .r-verdict { font-size: 1rem; font-weight: 800; margin-bottom: 4px; }
     .r-tip { font-size: 0.9rem; margin: 4px 0; line-height: 1.5; }
     .opp-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .cmpbar { position: relative; height: 12px; background: var(--paper-2); border-radius: 999px; }
+    .cmpbar-fill { height: 100%; border-radius: 999px; background: var(--lime); }
+    .cmp-marker { position: absolute; top: -3px; width: 3px; height: 18px; border-radius: 2px; background: var(--steel); }
+    .cmp-labels { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--muted); margin-top: 5px; }
+    .coach-quote { margin: 6px 0 0; font-weight: 600; line-height: 1.5; }
     .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .empty { text-align: center; color: var(--muted); padding: 42px 12px; }
     .empty .ic { font-size: 2.2rem; margin-bottom: 8px; }
@@ -442,6 +447,11 @@
         <div class="field"><label for="nextMatch">下一場比賽日期時間</label><input id="nextMatch" type="datetime-local" /></div>
         <div class="field"><label for="nextNote">目標或備註</label><input id="nextNote" type="text" placeholder="例如：雙誤控制喺 5 次內" /></div>
         <button class="btn btn-ghost btn-block" onclick="saveQuickSettings()">儲存設定</button>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow">教練 Ray 的話</div>
+        <p class="coach-quote" id="coachQuote"></p>
       </div>
 
       <div class="card">
@@ -638,6 +648,7 @@
           <button class="btn btn-primary" onclick="shareReport()">📤 分享</button>
           <button class="btn btn-ghost" onclick="copyReport()">📋 複製</button>
         </div>
+        <button class="btn btn-clay btn-block" style="margin-top:10px" onclick="deleteMatchSel()">🗑️ 刪除此場</button>
       </div>
       <div class="card" style="margin-top:16px">
         <h2 style="margin-top:0">下一場</h2>
@@ -666,6 +677,14 @@
     let liveMode = "full"; // 'full' | 'quick'
     let oppHandVal = "right";
     let viewMode = "me"; // 'me' | 'opp' | 'cmp'
+    const COACH_QUOTES = [
+      "今日唔使諗輸贏——先諗『呢一球我要打得專注』。—— 教練 Ray",
+      "你日日練嘅嘢，會喺比賽度出現。相信過程。—— 教練 Ray",
+      "失分係學習，唔係失敗。下一分，重新嚟。—— 教練 Ray",
+      "發球前深呼吸一下，放鬆肩膀。—— 教練 Ray",
+      "年青球員最緊要係享受比賽，同時留低進步空間。—— 教練 Ray"
+    ];
+    function pickQuote() { const i = new Date().getDate() % COACH_QUOTES.length; return COACH_QUOTES[i]; }
     let theme = (() => { try { const s = localStorage.getItem("tb:theme"); if (s === "day" || s === "night") return s; } catch (e) {} return (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "night" : "day"; })();
 
     const FORMATS = {
@@ -713,6 +732,7 @@
       $("#playerAge").value = data.playerAge || "";
       $("#nextNote").value = data.nextNote || "";
       $("#nextMatch").value = data.nextMatch ? toLocalInput(new Date(data.nextMatch)) : "";
+      const q = $("#coachQuote"); if (q) q.textContent = pickQuote();
       renderCountdown();
       renderRecent();
     }
@@ -1164,7 +1184,13 @@
     function setViewMode(mode) { viewMode = mode; if (currentView === "analysis") renderAnalysis(); else if (currentView === "report") renderReport(); }
     function viewToggleHTML() {
       const mk = (v, lab) => `<button class="chip ${viewMode===v?"selected":""}" onclick="setViewMode('${v}')">${lab}</button>`;
-      return `<div class="seg" style="margin:0 0 12px">${mk("me","自己")}${mk("opp","對手")}${mk("cmp","比較")}</div>`;
+      return `<div class="seg" style="margin:0 0 12px">${mk("me","自己")}${mk("opp","對手")}${mk("cmp","比較")}${mk("avg","平均")}</div>`;
+    }
+    function avgView() {
+      const avg = avgRates(data.matches);
+      const items = [["得分率", avg.pointRate], ["一發入框率", avg.serveInPct], ["雙誤率", avg.dfRate], ["保住發球局", avg.holdPct], ["破發成功率", avg.breakPct], ["破發點轉化", avg.brkConv]];
+      const html = items.map(([n,v]) => `<div class="stat"><div class="name">${n}</div><div class="val">${v==null?"–":Math.round(v*100)+"%"}</div></div>`).join("");
+      return `<div class="card"><h3 style="margin-top:0">平均比賽數據</h3><p class="muted" style="margin:-6px 0 0">以 ${data.matches.length} 場計</p><div class="stat-grid">${html}</div></div>`;
     }
     function oppView(m) {
       const or = oppRates(m);
@@ -1178,11 +1204,10 @@
       const html = rows.map(([n,a,b]) => {
         const ap = a==null?"–":Math.round(a*100)+"%", bp = b==null?"–":Math.round(b*100)+"%";
         const aP = a==null?0:Math.round(a*100), bP = b==null?0:Math.round(b*100);
-        return `<div class="metric"><div class="head"><span class="name">${n}</span></div>
-          <div class="bars">
-            <div class="bar-col mine"><div class="bar-track"><div class="bar" style="width:${Math.min(100,aP)}%"></div></div><div class="bar-label"><span>我</span><b>${ap}</b></div></div>
-            <div class="bar-col avg"><div class="bar-track"><div class="bar" style="width:${Math.min(100,bP)}%"></div></div><div class="bar-label"><span>對手</span><b>${bp}</b></div></div>
-          </div></div>`;
+        return `<div class="metric"><div class="head"><span class="name">${n}</span><span class="tag good">我 ${ap} / 對 ${bp}</span></div>
+          <div class="cmpbar"><div class="cmpbar-fill" style="width:${Math.min(100,aP)}%"></div>${b==null?"":`<span class="cmp-marker" style="left:${Math.min(100,bP)}%"></span>`}</div>
+          <div class="cmp-labels"><span>我</span><span>對手</span></div>
+        </div>`;
       }).join("");
       return `<div class="card"><h3 style="margin-top:0">我 vs 對手</h3>${html}${oppMetaHTML(m)}</div>`;
     }
@@ -1208,6 +1233,7 @@
     }
 
     function analysisDataBlock(m, r, avg) {
+      if (viewMode === "avg") return avgView();
       if (viewMode === "opp") return oppView(m);
       if (viewMode === "cmp") return compareView(m);
       if (m.quick) {
@@ -1293,6 +1319,8 @@
         <div class="who"><div class="avatar">🎾</div><div><div class="name">教練 Ray</div><div class="role">你的球場軍師 · 根據數據俾建議</div></div></div>
         <div class="verdict">${best ? "今日最佳：" + best : bestNote(m)}</div>
         <ul>${pts.map(p=>`<li>${p}</li>`).join("")}</ul>
+        <button class="btn btn-primary btn-block" style="margin-top:12px" id="coachBtn" onclick="getCoach()">🤖 AI 教練分析</button>
+        <div id="coachAI" style="margin-top:10px;white-space:pre-wrap;font-size:0.9rem;line-height:1.6"></div>
       </div>`;
     }
     function bestOf(m, r) {
@@ -1376,6 +1404,13 @@
         L.push(`得分率：我 ${pct(r.pointRate)} / 對手 ${pct(or.pointRate)}`);
         L.push(`保住發球局：我 ${pct(r.holdPct)} / 對手 ${pct(or.holdPct)}`);
         L.push(`破發成功率：我 ${pct(r.breakPct)} / 對手 ${pct(or.breakPct)}`);
+      } else if (viewMode === "avg") {
+        const av = avgRates(data.matches);
+        L.push(`平均得分率：${pct(av.pointRate)}`);
+        L.push(`平均一發入框率：${pct(av.serveInPct)}`);
+        L.push(`平均雙誤率：${pct(av.dfRate)}`);
+        L.push(`平均保住發球局：${pct(av.holdPct)}`);
+        L.push(`平均破發成功率：${pct(av.breakPct)}`);
       } else if (m.quick) {
         L.push(`得分率：${pct(r.pointRate)}`);
         L.push(`一發入框率：${pct(r.serveInPct)}`);
@@ -1400,10 +1435,13 @@
     }
     function buildReportHTML(m) {
       const r = rates(m), or = oppRates(m);
+      const av = avgRates(data.matches);
       const row = (k, v) => `<div class="r-row"><span class="k">${k}</span><span class="v">${v}</span></div>`;
       const dataRows = viewMode === "opp"
         ? row("得分率", pct(or.pointRate)) + row("保住發球局", pct(or.holdPct)) + row("破發成功率", pct(or.breakPct))
-        : viewMode === "cmp"
+        : viewMode === "avg"
+          ? row("平均得分率", pct(av.pointRate)) + row("平均一發入框率", pct(av.serveInPct)) + row("平均雙誤率", pct(av.dfRate)) + row("平均保住發球局", pct(av.holdPct)) + row("平均破發成功率", pct(av.breakPct))
+          : viewMode === "cmp"
           ? row("得分率", `我 ${pct(r.pointRate)} / 對 ${pct(or.pointRate)}`) + row("保住發球局", `我 ${pct(r.holdPct)} / 對 ${pct(or.holdPct)}`) + row("破發成功率", `我 ${pct(r.breakPct)} / 對 ${pct(or.breakPct)}`)
           : (m.quick
               ? row("得分率", pct(r.pointRate)) + row("一發入框率", pct(r.serveInPct)) + row("雙誤率", pct(r.dfRate)) + row("Ace", m.st.aces) + row("致勝球", m.st.winner)
@@ -1423,6 +1461,29 @@
         <div class="r-sec"><h4>教練 Ray 評語</h4><div class="r-verdict">${bestOf(m, r)}</div>${tips}</div>
         <div class="r-sec"><h4>下場目標</h4><div class="r-row"><span class="k">目標</span><span class="v">${esc(data.nextNote || "—")}</span></div>${data.nextMatch ? '<div class="r-row"><span class="k">下場日期</span><span class="v">' + esc(new Date(data.nextMatch).toLocaleDateString("zh-Hant-HK")) + '</span></div>' : ""}</div>
       `;
+    }
+
+    function getCoach() {
+      const m = data.matches.find(x=>x.id===selectedAnalysis) || data.matches.slice().sort((a,b)=>b.ts-a.ts)[0];
+      if (!m) return;
+      const btn = document.getElementById("coachBtn"); if (btn) { btn.textContent="生成中…"; btn.disabled=true; }
+      const out = document.getElementById("coachAI"); if (out) out.textContent="等你一下，AI 教練諗緊建議…";
+      gasGet({ api:"coach", match: JSON.stringify(m) }).then(txt=>{
+        if (out) out.textContent = (txt && typeof txt==="object" && txt.error) ? txt.error : (txt || "");
+        if (btn) { btn.textContent="🤖 AI 教練分析"; btn.disabled=false; }
+      });
+    }
+    function deleteMatchSel() {
+      const id = currentView==="report" ? selectedReport : (currentView==="analysis" ? selectedAnalysis : null);
+      if (!id) return;
+      const m = data.matches.find(x=>x.id===id); if (!m) return;
+      if (!confirm("確定刪除「"+(m.event||m.opp||"呢場")+"」？呢個動作唔可以復原。")) return;
+      data.matches = data.matches.filter(x=>x.id!==id);
+      save(); gasGet({ api:"deleteMatch", id:id });
+      const rest = data.matches.slice().sort((a,b)=>b.ts-a.ts);
+      selectedAnalysis = rest.length ? rest[0].id : null; selectedReport = selectedAnalysis;
+      if (currentView==="report") renderReport(); else if (currentView==="analysis") renderAnalysis();
+      toast("已刪除");
     }
 
     async function shareReport() {
@@ -1465,7 +1526,7 @@
     function toggleTheme() { applyTheme(theme === "night" ? "day" : "night"); }
 
     /* ---------- 跨裝置同步（Google Sheet，經 Apps Script GET API） ---------- */
-    const GAS_BACKEND = "https://script.google.com/macros/s/AKfycbzM-0QvxsZWxgXHgxlKyXLYAzxAChIGxShrLgEjxteoHQUTckIOSL9d0os-_UKNLEs9/exec";
+    const GAS_BACKEND = "https://script.google.com/macros/s/AKfycbyOT2TR19yTxLxFyTXcenY6QwxhVqFL1x6QVeFPqsw9xpF838BQvJX8fMhJP_bLpPBX/exec";
     function gasGet(params) {
       return fetch(GAS_BACKEND + "?" + new URLSearchParams(params).toString()).then(r => r.json()).catch(() => null);
     }
