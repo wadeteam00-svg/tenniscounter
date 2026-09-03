@@ -483,9 +483,6 @@
             </div>
           </div>
 
-          <div class="field"><label for="oppBadOut">對手亂Call「Out」次數</label><input id="oppBadOut" type="number" inputmode="numeric" min="0" value="0" /></div>
-          <div class="field"><label for="oppBadScore">對手亂Call「分數」次數</label><input id="oppBadScore" type="number" inputmode="numeric" min="0" value="0" /></div>
-
           <div class="field">
             <label>記分模式</label>
             <div class="seg">
@@ -592,6 +589,16 @@
           <div class="live-actions">
             <button class="btn btn-clay" onclick="qUndo()">↩︎ 撤銷</button>
             <button class="btn btn-primary" onclick="qEnd()">完場，出報告 ✓</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="oppCallPanel" style="display:none">
+        <div class="group">
+          <h3>🚨 對手亂Call</h3>
+          <div class="grid">
+            <button class="counter tone-clay" onclick="oppCall('out')"><span class="emo">📢</span>亂Call「Out」<span class="cnt" id="opBadOutC">0</span></button>
+            <button class="counter tone-clay" onclick="oppCall('score')"><span class="emo">🔢</span>亂Call「分數」<span class="cnt" id="opBadScoreC">0</span></button>
           </div>
         </div>
       </div>
@@ -736,8 +743,20 @@
       $("#recordSetup").style.display = "block";
       $("#recordLiveFull").style.display = "none";
       $("#recordLiveQuick").style.display = "none";
+      $("#oppCallPanel").style.display = "none";
     }
     function setOppHand(h) { oppHandVal = h; $("#oppHandR").classList.toggle("selected", h === "right"); $("#oppHandL").classList.toggle("selected", h === "left"); }
+    function oppCall(k) {
+      const L = data.live; if (!L) return;
+      if (k === "out") L.oppBadOut = (L.oppBadOut || 0) + 1; else L.oppBadScore = (L.oppBadScore || 0) + 1;
+      save(); vibrate(25); updateOppCallHUD();
+    }
+    function updateOppCallHUD() {
+      const L = data.live; if (!L) return;
+      const o = $("#opBadOutC"), s = $("#opBadScoreC");
+      if (o) o.textContent = L.oppBadOut || 0;
+      if (s) s.textContent = L.oppBadScore || 0;
+    }
     function renderRecord() {
       const L = data.live;
       if (!L) { setMode(liveMode); return; }
@@ -747,12 +766,14 @@
       $("#recordSetup").style.display = on ? "none" : "block";
       $("#recordLiveFull").style.display = "none";
       $("#recordLiveQuick").style.display = on ? "block" : "none";
+      $("#oppCallPanel").style.display = on ? "block" : "none";
       if (on) updateQuickHUD();
     }
     function showFull(on) {
       $("#recordSetup").style.display = on ? "none" : "block";
       $("#recordLiveQuick").style.display = "none";
       $("#recordLiveFull").style.display = on ? "block" : "none";
+      $("#oppCallPanel").style.display = on ? "block" : "none";
       if (on) renderLive();
     }
 
@@ -762,8 +783,7 @@
       const stage = $("#stageName").value.trim();
       const division = $("#divisionName").value.trim();
       const oppHand = oppHandVal;
-      const oppBadOut = parseInt($("#oppBadOut").value,10) || 0;
-      const oppBadScore = parseInt($("#oppBadScore").value,10) || 0;
+      const oppBadOut = 0, oppBadScore = 0;
       const quick = liveMode === "quick";
       const L = {
         event, opp, stage, division, oppHand, oppBadOut, oppBadScore, ts: Date.now(), quick,
@@ -1019,6 +1039,7 @@
         html = returnBtnHTML();
       }
       btns.innerHTML = html;
+      updateOppCallHUD();
     }
     function dots(n, max, side) {
       let s = "";
@@ -1071,6 +1092,7 @@
       $("#qWon").textContent = s.ptWon; $("#qLost").textContent = s.ptLost;
       const map = {ptWon:"qc-ptWon", ptLost:"qc-ptLost", aces:"qc-aces", winner:"qc-winner", ufe:"qc-ufe", df:"qc-df", firstOK:"qc-firstOK", firstFault:"qc-firstFault"};
       Object.keys(map).forEach(k => { const el = $("#" + map[k]); if (el) el.textContent = s[k]; });
+      updateOppCallHUD();
     }
 
     /* ---------- Stats helpers ---------- */
