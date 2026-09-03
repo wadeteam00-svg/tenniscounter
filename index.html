@@ -699,7 +699,7 @@
       try { const p = JSON.parse(localStorage.getItem(STORE_KEY) || "null"); if (!p) return defaults(); return Object.assign(defaults(), p); }
       catch (e) { return defaults(); }
     }
-    function defaults() { return { player:"", playerAge:"", nextMatch:null, nextNote:"", matches:[], live:null }; }
+    function defaults() { return { player:"", playerAge:"", nextMatch:null, nextNote:"", matches:[], live:null, coachStyle:"asia", coachLang:"zh" }; }
     function save() { localStorage.setItem(STORE_KEY, JSON.stringify(data)); }
 
     const $ = (s, p) => (p || document).querySelector(s);
@@ -1319,7 +1319,12 @@
         <div class="who"><div class="avatar">🎾</div><div><div class="name">教練 Ray</div><div class="role">你的球場軍師 · 根據數據俾建議</div></div></div>
         <div class="verdict">${best ? "今日最佳：" + best : bestNote(m)}</div>
         <ul>${pts.map(p=>`<li>${p}</li>`).join("")}</ul>
-        <button class="btn btn-primary btn-block" style="margin-top:12px" id="coachBtn" onclick="getCoach()">🤖 AI 教練分析</button>
+        <div class="seg" style="margin:12px 0 10px">
+          <button class="chip ${data.coachStyle==="west"?"":"selected"}" onclick="setCoachStyle('asia')">🇭🇰 亞洲教練</button>
+          <button class="chip ${data.coachStyle==="west"?"selected":""}" onclick="setCoachStyle('west')">🌍 外國教練</button>
+        </div>
+        <button class="btn btn-primary btn-block" id="coachBtn" onclick="getCoach()">🤖 AI 教練分析</button>
+        <div id="coachLangRow" style="display:none;margin-top:10px"><button class="btn btn-ghost btn-block btn-sm" id="coachLangBtn" onclick="toggleCoachLang()">🌐 切換 English</button></div>
         <div id="coachAI" style="margin-top:10px;white-space:pre-wrap;font-size:0.9rem;line-height:1.6"></div>
       </div>`;
     }
@@ -1463,16 +1468,22 @@
       `;
     }
 
-    function getCoach() {
+    function getCoach(lang) {
+      const target = lang || data.coachLang;
       const m = data.matches.find(x=>x.id===selectedAnalysis) || data.matches.slice().sort((a,b)=>b.ts-a.ts)[0];
       if (!m) return;
+      data.coachLang = target; save();
       const btn = document.getElementById("coachBtn"); if (btn) { btn.textContent="生成中…"; btn.disabled=true; }
-      const out = document.getElementById("coachAI"); if (out) out.textContent="等你一下，AI 教練諗緊建議…";
-      gasGet({ api:"coach", match: JSON.stringify(m) }).then(txt=>{
+      const out = document.getElementById("coachAI"); if (out) out.textContent = target==="zh" ? "等你一下，教練諗緊建議…" : "One moment, the coach is thinking…";
+      gasGet({ api:"coach", style:data.coachStyle, lang:target, match: JSON.stringify(m) }).then(txt=>{
         if (out) out.textContent = (txt && typeof txt==="object" && txt.error) ? txt.error : (txt || "");
+        const lr = document.getElementById("coachLangRow"); if (lr) lr.style.display="block";
+        const lb = document.getElementById("coachLangBtn"); if (lb) lb.textContent = target==="zh" ? "🌐 切換 English" : "🌐 切換 中文";
         if (btn) { btn.textContent="🤖 AI 教練分析"; btn.disabled=false; }
       });
     }
+    function setCoachStyle(style) { data.coachStyle = style; save(); if (currentView==="analysis") renderAnalysis(); }
+    function toggleCoachLang() { getCoach(data.coachLang==="zh" ? "en" : "zh"); }
     function deleteMatchSel() {
       const id = currentView==="report" ? selectedReport : (currentView==="analysis" ? selectedAnalysis : null);
       if (!id) return;
@@ -1526,7 +1537,7 @@
     function toggleTheme() { applyTheme(theme === "night" ? "day" : "night"); }
 
     /* ---------- 跨裝置同步（Google Sheet，經 Apps Script GET API） ---------- */
-    const GAS_BACKEND = "https://script.google.com/macros/s/AKfycbwgcCBW1lLuR28eIAKHRcp-6e_m0iR6VXsq5iwVVrkf3bvopAvDV8piDX6t_D_wV-Ei/exec";
+    const GAS_BACKEND = "https://script.google.com/macros/s/AKfycbxNC1sT9-riiRUxx1JUGUQqlTeA-ksrFjEg-dZyVGeMf-oFxIIsvgDWI84Igf-czBq4/exec";
     function gasGet(params) {
       return fetch(GAS_BACKEND + "?" + new URLSearchParams(params).toString()).then(r => r.json()).catch(() => null);
     }
