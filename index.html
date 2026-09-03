@@ -61,6 +61,7 @@
       --ease-in: cubic-bezier(0.36, 0.28, 0.24, 1);
       --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
       --dur-1: 120ms; --dur-2: 240ms; --dur-3: 420ms;
+      --footer-h: 5vh;
       color-scheme: light;
     }
 
@@ -109,7 +110,7 @@
     }
     #app {
       width: 100%; max-width: 540px; margin: 0 auto;
-      padding: calc(env(safe-area-inset-top) + 14px) 18px calc(env(safe-area-inset-bottom) + 10vh + 88px);
+      padding: calc(env(safe-area-inset-top) + 14px) 18px calc(env(safe-area-inset-bottom) + var(--footer-h) + 78px);
       flex: 1;
     }
 
@@ -208,7 +209,7 @@
 
     /* ---------- Bottom nav ---------- */
     #nav {
-      position: fixed; left: 0; right: 0; bottom: 10vh; z-index: 30;
+      position: fixed; left: 0; right: 0; bottom: calc(env(safe-area-inset-bottom) + var(--footer-h)); z-index: 30;
       max-width: 540px; margin: 0 auto;
       background: var(--canvas);
       border-top: 1px solid var(--border-2);
@@ -225,6 +226,15 @@
     #nav button .ic { font-size: 1.25rem; line-height: 1; }
     #nav button.active { color: var(--carbon); background: var(--lime); }
     #nav button:focus-visible { outline: 2px solid var(--lime); outline-offset: -3px; }
+
+    .footing {
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 25;
+      background: #000000; color: #ffffff;
+      display: flex; align-items: center;
+      min-height: var(--footer-h);
+      padding: 8px 18px calc(env(safe-area-inset-bottom) + 8px);
+      font-size: 0.82rem; font-weight: 700; letter-spacing: 0.12em;
+    }
 
     /* ---------- Home hero ---------- */
     .hero {
@@ -380,7 +390,7 @@
     .pill { display: inline-block; background: var(--accent-soft); color: var(--accent-deep); font-weight: 700; border-radius: var(--r-m); padding: 4px 10px; font-size: 0.76rem; border: 1px solid var(--accent-soft); }
 
     .toast {
-      position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom) + 10vh + 88px);
+      position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom) + var(--footer-h) + 88px);
       transform: translateX(-50%) translateY(12px);
       background: var(--surface); color: var(--ink); font-weight: 700; font-size: 0.9rem;
       padding: 12px 18px; border-radius: 9999px; box-shadow: var(--shadow-1); border: 1px solid var(--border);
@@ -643,6 +653,7 @@
     <button data-nav="analysis"><span class="ic">👾</span>分析</button>
     <button data-nav="report"><span class="ic">📄</span>報告</button>
   </nav>
+  <div class="footing" aria-label="標語">Carpi Diem</div>
   <div class="toast" id="toast"></div>
 
   <script>
