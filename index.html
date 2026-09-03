@@ -719,21 +719,22 @@
     function toast(msg) { const t = $("#toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toastTimer); toastTimer = setTimeout(()=>t.classList.remove("show"), 1600); }
     let _audioCtx = null;
     const vibrate = (ms) => {
-      // Android / other: native vibration
+      // Android / other: native vibration (if supported)
       try { navigator.vibrate && navigator.vibrate(ms); } catch (e) {}
-      // iOS (Safari): Web Audio pulse -> triggers Taptic Engine
+      // Guaranteed feedback: a short, subtle audible "click" (Web Audio).
+      // This reliably plays on iOS Safari too, so you always hear a tap.
       try {
         const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
         if (!_audioCtx) _audioCtx = new AC();
         if (_audioCtx.state === "suspended") _audioCtx.resume();
-        const osc = _audioCtx.createOscillator(), gain = _audioCtx.createGain();
-        osc.type = "sine"; osc.frequency.value = 260;
         const t = _audioCtx.currentTime;
+        const osc = _audioCtx.createOscillator(), gain = _audioCtx.createGain();
+        osc.type = "sine"; osc.frequency.value = 1000;
         gain.gain.setValueAtTime(0.0001, t);
-        gain.gain.exponentialRampToValueAtTime(0.0006, t + 0.004);
-        gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.03);
+        gain.gain.exponentialRampToValueAtTime(0.09, t + 0.004);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.05);
         osc.connect(gain); gain.connect(_audioCtx.destination);
-        osc.start(t); osc.stop(t + 0.035);
+        osc.start(t); osc.stop(t + 0.06);
       } catch (e) {}
     };
 
