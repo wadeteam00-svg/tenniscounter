@@ -1526,7 +1526,7 @@
     function toggleTheme() { applyTheme(theme === "night" ? "day" : "night"); }
 
     /* ---------- 跨裝置同步（Google Sheet，經 Apps Script GET API） ---------- */
-    const GAS_BACKEND = "https://script.google.com/macros/s/AKfycbyOT2TR19yTxLxFyTXcenY6QwxhVqFL1x6QVeFPqsw9xpF838BQvJX8fMhJP_bLpPBX/exec";
+    const GAS_BACKEND = "https://script.google.com/macros/s/AKfycbwgcCBW1lLuR28eIAKHRcp-6e_m0iR6VXsq5iwVVrkf3bvopAvDV8piDX6t_D_wV-Ei/exec";
     function gasGet(params) {
       return fetch(GAS_BACKEND + "?" + new URLSearchParams(params).toString()).then(r => r.json()).catch(() => null);
     }
