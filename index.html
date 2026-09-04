@@ -518,6 +518,8 @@
                 <option value="bo3noad">3 盤 2 勝 · No Ad · 搶 7</option>
                 <option value="bo5ad">5 盤 3 勝 · 全 Ad (正式) · 搶 7</option>
                 <option value="bo5noad">5 盤 3 勝 · No Ad · 搶 7</option>
+                <option value="cn4">國內制 · 一盤 4 局 · No Ad · 搶 7 一分決勝</option>
+                <option value="cn6">國內制 · 一盤 6 局 · No Ad · 搶 7 一分決勝</option>
                 <option value="custom">自訂</option>
               </select>
             </div>
@@ -706,9 +708,11 @@
       bo3ad:   { bestOf:3, ad:true,  games:6, finalTB:7 },
       bo3noad: { bestOf:3, ad:false, games:6, finalTB:7 },
       bo5ad:   { bestOf:5, ad:true,  games:6, finalTB:7 },
-      bo5noad: { bestOf:5, ad:false, games:6, finalTB:7 }
+      bo5noad: { bestOf:5, ad:false, games:6, finalTB:7 },
+      cn4:     { bestOf:1, ad:false, games:4, finalTB:7, tbWinBy:1 },
+      cn6:     { bestOf:1, ad:false, games:6, finalTB:7, tbWinBy:1 }
     };
-    const fmtName = { bo3ad:"3盤2勝 · 全Ad (正式) · 搶七", bo3noad:"3盤2勝 · No Ad · 搶七", bo3tb10:"3盤2勝 · 全Ad · 搶七", bo5ad:"5盤3勝 · 全Ad (正式) · 搶七", bo5noad:"5盤3勝 · No Ad · 搶七", custom:"自訂" };
+    const fmtName = { bo3ad:"3盤2勝 · 全Ad (正式) · 搶七", bo3noad:"3盤2勝 · No Ad · 搶七", bo3tb10:"3盤2勝 · 全Ad · 搶七", bo5ad:"5盤3勝 · 全Ad (正式) · 搶七", bo5noad:"5盤3勝 · No Ad · 搶七", cn4:"國內制 · 一盤4局 · No Ad · 搶7一分決勝", cn6:"國內制 · 一盤6局 · No Ad · 搶7一分決勝", custom:"自訂" };
 
     function load() {
       try { const p = JSON.parse(localStorage.getItem(STORE_KEY) || "null"); if (!p) return defaults(); return Object.assign(defaults(), p); }
@@ -915,7 +919,9 @@
       if (L.tb) {
         if (myWin) L.tb.a++; else L.tb.b++;
         const target = tbTarget(L);
-        if ((L.tb.a >= target || L.tb.b >= target) && Math.abs(L.tb.a - L.tb.b) >= 2) {
+        const reach = L.tb.a >= target || L.tb.b >= target;
+        const winBy = (L.fmt.tbWinBy || 2);
+        if (reach && (winBy === 1 || Math.abs(L.tb.a - L.tb.b) >= 2)) {
           const tw = L.tb.a > L.tb.b ? "me" : "opp";
           L.g.push({ servedBy: L.server, winner: tw, tb: true });
           finishSet({ a: tw==="me"?7:6, b: tw==="me"?6:7, tb: {a:L.tb.a,b:L.tb.b}, winner: tw });
