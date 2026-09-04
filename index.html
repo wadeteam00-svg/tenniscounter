@@ -522,9 +522,9 @@
               </select>
             </div>
             <div id="customFmt" style="display:none">
-              <div class="field"><label for="cGames">每盤局數</label><input id="cGames" type="number" inputmode="numeric" min="1" max="10" value="6" /></div>
-              <div class="field"><label for="cSets">盤數（幾盤幾勝）</label><input id="cSets" type="number" inputmode="numeric" min="1" max="10" value="3" /></div>
-              <div class="field"><label for="cTB">搶七(Tie Break)分數</label><input id="cTB" type="number" inputmode="numeric" min="1" max="10" value="7" /></div>
+              <div class="field"><label for="cGames">每盤幾局先贏</label><input id="cGames" type="number" inputmode="numeric" min="1" max="10" value="6" /><p class="muted" style="font-size:0.78rem;margin:4px 0 0">例如：贏 6 局（即 6:6 打 tie break）</p></div>
+              <div class="field"><label for="cSets">全場幾多盤 (Best of)</label><input id="cSets" type="number" inputmode="numeric" min="1" max="10" value="3" /><p class="muted" style="font-size:0.78rem;margin:4px 0 0">3 = 三盤兩勝 · 5 = 五盤三勝 · 建議單數（1/3/5/7）</p></div>
+              <div class="field"><label for="cTB">Tie Break 分數</label><input id="cTB" type="number" inputmode="numeric" min="1" max="10" value="7" /><p class="muted" style="font-size:0.78rem;margin:4px 0 0">到呢分後要領先 2 分先贏（7:7 → 9:7）</p></div>
             </div>
             <div class="field"><label for="firstServer" data-i18n="rec_first">邊個開波先?</label>
               <select id="firstServer"><option value="me" data-i18n="me_lbl">我</option><option value="opp" data-i18n="opp_lbl">對手</option></select>
