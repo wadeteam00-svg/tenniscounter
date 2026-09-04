@@ -585,6 +585,7 @@
             <button class="btn btn-clay" onclick="undoAction()" data-i18n="undo_pt">↩︎ 撤銷一分</button>
             <button class="btn btn-ghost" onclick="confirmEnd()" data-i18n="end_early">提前完場</button>
           </div>
+          <button class="btn btn-primary btn-block" style="margin-top:10px" onclick="confirmEnd()" data-i18n="finish_game">🏁 完成比賽</button>
         </div>
       </div>
 
@@ -1456,8 +1457,11 @@
       L.push("「"+(data.lang==="en"?"Data":"數據")+"」");
       if (viewMode === "opp") {
         L.push(`得分率：${pct(or.pointRate)}`);
+        L.push(`一發入框率：${pct(or.serveInPct)}`);
+        L.push(`雙誤率：${pct(or.dfRate)}`);
         L.push(`保住發球局：${pct(or.holdPct)}`);
         L.push(`破發成功率：${pct(or.breakPct)}`);
+        L.push(`破發點轉化：${pct(or.brkConv)}`);
       } else if (viewMode === "cmp") {
         L.push(`得分率：我 ${pct(r.pointRate)} / 對手 ${pct(or.pointRate)}`);
         L.push(`保住發球局：我 ${pct(r.holdPct)} / 對手 ${pct(or.holdPct)}`);
@@ -1480,7 +1484,7 @@
         L.push(`雙誤率：${pct(r.dfRate)}`);
         L.push(`保住發球局：${pct(r.holdPct)}`);
         L.push(`破發成功率：${pct(r.breakPct)}`);
-        L.push(`Ace：${m.st.aces}　雙誤：${m.st.df}`);
+        L.push(`破發點轉化：${pct(r.brkConv)}`);
       }
       L.push("");
       L.push("「"+(data.lang==="en"?"Coach Ray":"教練 Ray 評語")+"」");
@@ -1496,14 +1500,14 @@
       const av = avgRates(data.matches);
       const row = (k, v) => `<div class="r-row"><span class="k">${k}</span><span class="v">${v}</span></div>`;
       const dataRows = viewMode === "opp"
-        ? row("得分率", pct(or.pointRate)) + row("保住發球局", pct(or.holdPct)) + row("破發成功率", pct(or.breakPct))
+        ? row("得分率", pct(or.pointRate)) + row("一發入框率", pct(or.serveInPct)) + row("雙誤率", pct(or.dfRate)) + row("保住發球局", pct(or.holdPct)) + row("破發成功率", pct(or.breakPct)) + row("破發點轉化", pct(or.brkConv))
         : viewMode === "avg"
           ? row("平均得分率", pct(av.pointRate)) + row("平均一發入框率", pct(av.serveInPct)) + row("平均雙誤率", pct(av.dfRate)) + row("平均保住發球局", pct(av.holdPct)) + row("平均破發成功率", pct(av.breakPct))
           : viewMode === "cmp"
           ? row("得分率", `我 ${pct(r.pointRate)} / 對 ${pct(or.pointRate)}`) + row("保住發球局", `我 ${pct(r.holdPct)} / 對 ${pct(or.holdPct)}`) + row("破發成功率", `我 ${pct(r.breakPct)} / 對 ${pct(or.breakPct)}`)
           : (m.quick
               ? row("得分率", pct(r.pointRate)) + row("一發入框率", pct(r.serveInPct)) + row("雙誤率", pct(r.dfRate)) + row("Ace", m.st.aces) + row("致勝球", m.st.winner)
-              : row("得分率", pct(r.pointRate)) + row("一發入框率", pct(r.serveInPct)) + row("雙誤率", pct(r.dfRate)) + row("保住發球局", pct(r.holdPct)) + row("破發成功率", pct(r.breakPct)) + row("Ace / 雙誤", m.st.aces + " / " + m.st.df));
+              : row("得分率", pct(r.pointRate)) + row("一發入框率", pct(r.serveInPct)) + row("雙誤率", pct(r.dfRate)) + row("保住發球局", pct(r.holdPct)) + row("破發成功率", pct(r.breakPct)) + row("破發點轉化", pct(r.brkConv)));
       const tips = coachTips(m, r).map(t => `<div class="r-tip">· ${t}</div>`).join("");
       const sub = `${data.player || "球手"}${m.playerAge ? " · " + m.playerAge + "歲" : ""} · ${new Date(m.ts).toLocaleDateString("zh-Hant-HK")}`;
       return `<div class="r-title">TENNIS COUNTER</div>
@@ -1630,7 +1634,7 @@
       serve_i:["我發球","I serve"], serve_r:["我接發","I return"], win_pt:["我嬴呢分","I win point"], lose_pt:["我輸呢分","I lose point"],
       mood_title:["情緖（狀態）","Mood"], mood_excited:["亢奮","Fired up"], mood_calm:["平靜","Calm"], mood_nervous:["緊張","Nervous"], mood_down:["沮喪","Down"],
       opp_call:["對手亂Call","Opponent bad calls"], op_out:["亂Call「Out」","Bad “Out”"], op_score:["亂Call「分數」","Bad score"],
-      undo_pt:["撤銷一分","Undo point"], end_early:["提前完場","End early"], finish_report:["完場，出報告 ✓","Finish & Report"],
+      undo_pt:["撤銷一分","Undo point"], end_early:["提前完場","End early"], finish_report:["完場，出報告 ✓","Finish & Report"], finish_game:["🏁 完成比賽","🏁 Finish match"],
       ana_eyebrow:["數據分析","Analysis"], ana_title:["今場 vs 歷史平均","This match vs average"],
       view_me:["自己","Me"], view_opp:["對手","Opponent"], view_cmp:["比較","Compare"], view_avg:["平均","Average"],
       key_nums:["關鍵數字","Key numbers"], opp_perf:["對手表現","Opponent performance"], me_vs_opp:["我 vs 對手","Me vs Opponent"], avg_data:["平均比賽數據","Average"],
