@@ -512,13 +512,19 @@
           </div>
 
           <div id="fmtField">
-            <div class="field"><label for="fmtSel" data-i18n="rec_fmt">盤數格式</label>
-              <select id="fmtSel">
-                <option value="bo3ad">3 盤 2 勝 · 全 Ad（正式）</option>
-                <option value="bo3noad">3 盤 2 勝 · No-Ad</option>
-                <option value="bo3tb10">3 盤 2 勝 · 決勝盤 7 分</option>
-                <option value="bo5ad">5 盤 3 勝 · 全 Ad</option>
+            <div class="field"><label for="fmtSel" data-i18n="rec_fmt">賽制</label>
+              <select id="fmtSel" onchange="toggleCustomFmt()">
+                <option value="bo3ad">3 盤 2 勝 · 全 Ad (正式) · 搶 7</option>
+                <option value="bo3noad">3 盤 2 勝 · No Ad · 搶 7</option>
+                <option value="bo5ad">5 盤 3 勝 · 全 Ad (正式) · 搶 7</option>
+                <option value="bo5noad">5 盤 3 勝 · No Ad · 搶 7</option>
+                <option value="custom">自訂</option>
               </select>
+            </div>
+            <div id="customFmt" style="display:none">
+              <div class="field"><label for="cGames">每盤局數</label><input id="cGames" type="number" inputmode="numeric" min="1" max="10" value="6" /></div>
+              <div class="field"><label for="cSets">盤數（幾盤幾勝）</label><input id="cSets" type="number" inputmode="numeric" min="1" max="10" value="3" /></div>
+              <div class="field"><label for="cTB">搶七(Tie Break)分數</label><input id="cTB" type="number" inputmode="numeric" min="1" max="10" value="7" /></div>
             </div>
             <div class="field"><label for="firstServer" data-i18n="rec_first">邊個開波先?</label>
               <select id="firstServer"><option value="me" data-i18n="me_lbl">我</option><option value="opp" data-i18n="opp_lbl">對手</option></select>
@@ -696,12 +702,12 @@
     let theme = (() => { try { const s = localStorage.getItem("tb:theme"); if (s === "day" || s === "night") return s; } catch (e) {} return (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "night" : "day"; })();
 
     const FORMATS = {
-      bo3ad:   { bestOf:3, ad:true,  finalTB:7 },
-      bo3noad: { bestOf:3, ad:false, finalTB:7 },
-      bo3tb10: { bestOf:3, ad:true,  finalTB:7 },
-      bo5ad:   { bestOf:5, ad:true,  finalTB:7 }
+      bo3ad:   { bestOf:3, ad:true,  games:6, finalTB:7 },
+      bo3noad: { bestOf:3, ad:false, games:6, finalTB:7 },
+      bo5ad:   { bestOf:5, ad:true,  games:6, finalTB:7 },
+      bo5noad: { bestOf:5, ad:false, games:6, finalTB:7 }
     };
-    const fmtName = { bo3ad:"3盤2勝 · 全Ad", bo3noad:"3盤2勝 · No-Ad", bo3tb10:"3盤2勝 · 決勝盤7分", bo5ad:"5盤3勝 · 全Ad" };
+    const fmtName = { bo3ad:"3盤2勝 · 全Ad (正式) · 搶七", bo3noad:"3盤2勝 · No Ad · 搶七", bo3tb10:"3盤2勝 · 全Ad · 搶七", bo5ad:"5盤3勝 · 全Ad (正式) · 搶七", bo5noad:"5盤3勝 · No Ad · 搶七", custom:"自訂" };
 
     function load() {
       try { const p = JSON.parse(localStorage.getItem(STORE_KEY) || "null"); if (!p) return defaults(); return Object.assign(defaults(), p); }
@@ -811,6 +817,8 @@
       $("#oppCallPanel").style.display = "none";
     }
     function setOppHand(h) { oppHandVal = h; $("#oppHandR").classList.toggle("selected", h === "right"); $("#oppHandL").classList.toggle("selected", h === "left"); }
+    function clampInt(v, lo, hi, d) { const n = parseInt(v, 10); return isNaN(n) ? d : Math.max(lo, Math.min(hi, n)); }
+    function toggleCustomFmt() { const v = $("#fmtSel").value, c = $("#customFmt"); if (c) c.style.display = v === "custom" ? "block" : "none"; }
     function oppCall(k) {
       const L = data.live; if (!L) return;
       if (k === "out") L.oppBadOut = (L.oppBadOut || 0) + 1; else L.oppBadScore = (L.oppBadScore || 0) + 1;
@@ -850,10 +858,16 @@
       const oppHand = oppHandVal;
       const oppBadOut = 0, oppBadScore = 0;
       const quick = liveMode === "quick";
+      let fmt = null, fmtKey = null;
+      if (!quick) {
+        fmtKey = $("#fmtSel").value;
+        fmt = fmtKey === "custom"
+          ? { bestOf: clampInt($("#cSets").value,1,10,3), ad:true, games: clampInt($("#cGames").value,1,10,6), finalTB: clampInt($("#cTB").value,1,10,7) }
+          : (FORMATS[fmtKey] || FORMATS.bo3ad);
+      }
       const L = {
         event, opp, stage, division, oppHand, oppBadOut, oppBadScore, ts: Date.now(), quick,
-        fmt: quick ? null : FORMATS[$("#fmtSel").value] || FORMATS.bo3ad,
-        fmtKey: quick ? null : $("#fmtSel").value,
+        fmt, fmtKey,
         firstServer: quick ? null : $("#firstServer").value,
         server: quick ? null : $("#firstServer").value,
         sets: [], cur: {a:0,b:0}, pt: {a:0,b:0}, tb: null, g: [],
@@ -870,6 +884,7 @@
 
     /* ---------- Tennis scoring engine ---------- */
     function setsToWin(L) { return Math.ceil(L.fmt.bestOf / 2); }
+    function gamesToWin(L) { return (L.fmt && L.fmt.games) || 6; }
     function isDecidingSet() { const L = data.live; return L.sets.length === setsToWin(L) - 1; }
     function other(s) { return s === "me" ? "opp" : "me"; }
     function pointGivesGame(winner, a, b, ad) { if (winner==="me") a++; else b++; if (ad) return (a>=4&&a-b>=2)||(b>=4&&b-a>=2); return a===4||b===4; }
@@ -877,7 +892,7 @@
     function isMeBreakPoint(L) { if (L.server!=="opp" || L.tb) return false; return pointGivesGame("me", L.pt.a, L.pt.b, L.fmt.ad); }
     function isMeGamePoint(L) { if (L.server!=="me" || L.tb) return false; return pointGivesGame("me", L.pt.a, L.pt.b, L.fmt.ad); }
     function isOppGamePoint(L) { if (L.server!=="opp" || L.tb) return false; return pointGivesGame("opp", L.pt.a, L.pt.b, L.fmt.ad); }
-    function tbTarget(L) { return (isDecidingSet() && (L.fmt.finalTB||7) >= 10) ? (L.fmt.finalTB||7) : 7; }
+    function tbTarget(L) { return (L.fmt && L.fmt.finalTB) || 7; }
     function tbServer(L) {
       const n = L.tb.a + L.tb.b;
       if (n === 0) return L.firstServer;
@@ -931,9 +946,10 @@
       L.pt = { a:0, b:0 };
       if (gw === "me") L.cur.a++; else L.cur.b++;
       L.server = other(L.server);
-      if (L.cur.a === 6 && L.cur.b === 6) { L.tb = { a:0, b:0 }; L.firstServer = L.server; L.server = L.firstServer; return; }
-      const aw = L.cur.a >= 6 && L.cur.a - L.cur.b >= 2;
-      const bw = L.cur.b >= 6 && L.cur.b - L.cur.a >= 2;
+      const G = gamesToWin(L);
+      if (L.cur.a === G-1 && L.cur.b === G-1) { L.tb = { a:0, b:0 }; L.firstServer = L.server; L.server = L.firstServer; return; }
+      const aw = L.cur.a >= G && L.cur.a - L.cur.b >= 2;
+      const bw = L.cur.b >= G && L.cur.b - L.cur.a >= 2;
       if (aw || bw) finishSet({ a:L.cur.a, b:L.cur.b, tb:null, winner: aw ? "me" : "opp" });
     }
 
@@ -1203,8 +1219,11 @@
       const s = m.st, total = s.pWon + s.pLost;
       return {
         pointRate: total ? s.pLost / total : null,
+        serveInPct: null,
+        dfRate: null,
         holdPct: m.m && m.m.oppServGames ? (m.m.oppServGames - m.m.breaks) / m.m.oppServGames : null,
-        breakPct: m.m && m.m.servGames ? (m.m.servGames - m.m.holds) / m.m.servGames : null
+        breakPct: m.m && m.m.servGames ? (m.m.servGames - m.m.holds) / m.m.servGames : null,
+        brkConv: null
       };
     }
     function oppHandLabel(h) { return h === "left" ? "左手" : h === "right" ? "右手" : "—"; }
@@ -1228,7 +1247,7 @@
     }
     function oppView(m) {
       const or = oppRates(m);
-      const items = [[t("stat_pt"), or.pointRate], [t("stat_hold"), or.holdPct], [t("stat_break"), or.breakPct]];
+      const items = [[t("stat_pt"), or.pointRate], [t("stat_first"), or.serveInPct], [t("stat_df"), or.dfRate], [t("stat_hold"), or.holdPct], [t("stat_break"), or.breakPct], [t("stat_brk"), or.brkConv]];
       const stat = items.map(([n,v]) => `<div class="stat"><div class="name">${n}</div><div class="val">${v==null?"–":Math.round(v*100)+"%"}</div></div>`).join("");
       return `<div class="card"><h3 style="margin-top:0">${t("opp_perf")}</h3><div class="stat-grid">${stat}</div>${oppMetaHTML(m)}</div>`;
     }
@@ -1605,7 +1624,7 @@
       rec_event:["賽事名稱","Event"], rec_opp:["對手名稱","Opponent"], rec_stage:["階段","Stage"], rec_division:["組別","Division"],
       rec_hand:["對手慣用手持拍","Opponent dominant hand"], hand_right:["右 手","Right"], hand_left:["左 手","Left"],
       rec_mode:["記分模式","Scoring mode"], mode_full:["完整計分","Full scoring"], mode_quick:["快速計數","Quick count"],
-      rec_fmt:["盤數格式","Match format"], rec_first:["邊個開波先?","Who serves first?"], me_lbl:["我","Me"], opp_lbl:["對手","Opponent"],
+      rec_fmt:["賽制","Format"], rec_first:["邊個開波先?","Who serves first?"], me_lbl:["我","Me"], opp_lbl:["對手","Opponent"],
       pts:["得分","Points"], lost:["失分","Points lost"], ace:["Ace","Ace"], winner_lbl:["致勝球","Winner"], ufe:["非受迫失誤","Unforced"],
       df:["雙誤","Double fault"], first_ok:["一發成功","1st serve in"], first_fault:["一發失誤","1st serve fault"],
       serve_i:["我發球","I serve"], serve_r:["我接發","I return"], win_pt:["我嬴呢分","I win point"], lose_pt:["我輸呢分","I lose point"],
