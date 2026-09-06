@@ -324,6 +324,12 @@
     .mood-row .chip { flex: 1 1 auto; justify-content: center; }
     .live-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
 
+    /* spin shot tracking */
+    .spin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .spin-side { display: flex; flex-direction: column; gap: 8px; }
+    .spin-side .counter { width: 100%; min-height: 64px; padding: 12px 8px; font-size: 0.9rem; }
+    .spin-role { font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); text-align: center; }
+
     /* quick score panes */
     .score-pane { border-radius: var(--r-l); padding: 16px; text-align: center; background: var(--charcoal-2); border: 1px solid var(--border); }
     .score-pane .n { font-family: var(--font-display); font-weight: 900; font-size: 2.6rem; line-height: 1; letter-spacing: -0.02em; }
@@ -383,6 +389,12 @@
     .r-row .v { font-weight: 700; text-align: right; }
     .r-verdict { font-size: 1rem; font-weight: 800; margin-bottom: 4px; }
     .r-tip { font-size: 0.9rem; margin: 4px 0; line-height: 1.5; }
+    .r-set { margin-top: 12px; }
+    .r-set-head { font-weight: 800; font-size: 0.88rem; margin-bottom: 6px; color: var(--accent-deep); }
+    .r-games { display: flex; flex-wrap: wrap; gap: 6px 14px; }
+    .r-game { font-size: 0.82rem; }
+    .r-game .gn { color: var(--muted); }
+    .r-game b { color: var(--ink); font-weight: 700; margin-left: 4px; }
     .opp-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
     .cmpbar { position: relative; height: 12px; background: var(--paper-2); border-radius: 999px; }
     .cmpbar-fill { height: 100%; border-radius: 999px; background: var(--lime); }
@@ -573,6 +585,22 @@
         </div>
 
         <div class="group">
+          <h3><span data-i18n="spin_title">🌀 旋球得失分</span></h3>
+          <div class="spin-grid">
+            <div class="spin-side">
+              <div class="spin-role" data-i18n="spin_me_tab">自己</div>
+              <button class="counter tone-green" onclick="recordSpin('myOK')"><span class="emo">🌀</span><span data-i18n="spin_my_ok">旋球成功 · 我贏</span><span class="cnt" id="sc-myOK">0</span></button>
+              <button class="counter tone-clay" onclick="recordSpin('myErr')"><span class="emo">🌀</span><span data-i18n="spin_my_err">旋球失誤 · 我輸</span><span class="cnt" id="sc-myErr">0</span></button>
+            </div>
+            <div class="spin-side">
+              <div class="spin-role" data-i18n="spin_opp_tab">對手</div>
+              <button class="counter tone-green" onclick="recordSpin('oppOK')"><span class="emo">🌀</span><span data-i18n="spin_opp_ok">旋球成功 · 對手贏</span><span class="cnt" id="sc-oppOK">0</span></button>
+              <button class="counter tone-clay" onclick="recordSpin('oppErr')"><span class="emo">🌀</span><span data-i18n="spin_opp_err">旋球失誤 · 對手輸</span><span class="cnt" id="sc-oppErr">0</span></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="group">
           <h3><span data-i18n="mood_title">🧠 情緖（狀態）</span></h3>
           <div class="mood-row">
             <button class="chip" data-mood="excited">⚡<span data-i18n="mood_excited">亢奮</span></button>
@@ -613,6 +641,20 @@
           <div class="grid">
             <button class="counter tone-green" onclick="qTap('firstOK')"><span class="emo">✅</span>一發成功<span class="cnt" id="qc-firstOK">0</span></button>
             <button class="counter tone-clay" onclick="qTap('firstFault')"><span class="emo">❌</span>一發失誤<span class="cnt" id="qc-firstFault">0</span></button>
+          </div>
+        </div>
+        <div class="group"><h3><span data-i18n="spin_title">🌀 旋球得失分</span></h3>
+          <div class="spin-grid">
+            <div class="spin-side">
+              <div class="spin-role" data-i18n="spin_me_tab">自己</div>
+              <button class="counter tone-green" onclick="recordSpin('myOK')"><span class="emo">🌀</span><span data-i18n="spin_my_ok">旋球成功 · 我贏</span><span class="cnt" id="sc-myOK">0</span></button>
+              <button class="counter tone-clay" onclick="recordSpin('myErr')"><span class="emo">🌀</span><span data-i18n="spin_my_err">旋球失誤 · 我輸</span><span class="cnt" id="sc-myErr">0</span></button>
+            </div>
+            <div class="spin-side">
+              <div class="spin-role" data-i18n="spin_opp_tab">對手</div>
+              <button class="counter tone-green" onclick="recordSpin('oppOK')"><span class="emo">🌀</span><span data-i18n="spin_opp_ok">旋球成功 · 對手贏</span><span class="cnt" id="sc-oppOK">0</span></button>
+              <button class="counter tone-clay" onclick="recordSpin('oppErr')"><span class="emo">🌀</span><span data-i18n="spin_opp_err">旋球失誤 · 對手輸</span><span class="cnt" id="sc-oppErr">0</span></button>
+            </div>
           </div>
         </div>
         <div class="group">
@@ -836,6 +878,33 @@
       if (o) o.textContent = L.oppBadOut || 0;
       if (s) s.textContent = L.oppBadScore || 0;
     }
+    function updateSpinHUD() {
+      const L = data.live; if (!L) return;
+      const st = L.st;
+      const container = L.quick ? $("#recordLiveQuick") : $("#recordLiveFull");
+      if (!container) return;
+      const m = { mySpinOK:"sc-myOK", mySpinErr:"sc-myErr", oppSpinOK:"sc-oppOK", oppSpinErr:"sc-oppErr" };
+      Object.keys(m).forEach(k => { const el = container.querySelector("#" + m[k]); if (el) el.textContent = st[k] || 0; });
+    }
+    function recordSpin(out) {
+      const L = data.live; if (!L) return;
+      snapIfNeeded();
+      const s = L.st, my = out === "myOK" || out === "myErr";
+      let winner = "me";
+      if (out === "myOK") { s.mySpinOK = (s.mySpinOK||0) + 1; winner = "me"; }
+      else if (out === "myErr") { s.mySpinErr = (s.mySpinErr||0) + 1; winner = "opp"; }
+      else if (out === "oppOK") { s.oppSpinOK = (s.oppSpinOK||0) + 1; winner = "opp"; }
+      else if (out === "oppErr") { s.oppSpinErr = (s.oppSpinErr||0) + 1; winner = "me"; }
+      else return;
+      if (L.quick) {
+        if (winner === "me") s.ptWon++; else s.ptLost++;
+        s.__qlog.push("spin:" + out);
+        save(); updateQuickHUD(); vibrate(30); return;
+      }
+      L.serve = null;
+      decidePoint(winner);
+      vibrate(30);
+    }
     function renderRecord() {
       const L = data.live;
       if (!L) { setMode(liveMode); return; }
@@ -877,8 +946,8 @@
         firstServer: quick ? null : $("#firstServer").value,
         server: quick ? null : $("#firstServer").value,
         sets: [], cur: {a:0,b:0}, pt: {a:0,b:0}, tb: null, g: [],
-        st: quick ? {ptWon:0,ptLost:0,aces:0,winner:0,ufe:0,df:0,firstOK:0,firstFault:0,__qlog:[]}
-                  : {pWon:0,pLost:0,spWon:0,spLost:0,rpWon:0,rpLost:0,aces:0,df:0,w1in:0,w2in:0,firstFault:0},
+        st: quick ? {ptWon:0,ptLost:0,aces:0,winner:0,ufe:0,df:0,firstOK:0,firstFault:0,mySpinOK:0,mySpinErr:0,oppSpinOK:0,oppSpinErr:0,__qlog:[]}
+                  : {pWon:0,pLost:0,spWon:0,spLost:0,rpWon:0,rpLost:0,aces:0,df:0,w1in:0,w2in:0,firstFault:0,mySpinOK:0,mySpinErr:0,oppSpinOK:0,oppSpinErr:0},
         m: quick ? null : {holds:0,servGames:0,breaks:0,oppServGames:0,brkPts:0,brkConv:0},
         seg: [], serve: null, log: [], winner: null, _bp: false, _snapReady: true
       };
@@ -924,7 +993,7 @@
         const winBy = (L.fmt.tbWinBy || 2);
         if (reach && (winBy === 1 || Math.abs(L.tb.a - L.tb.b) >= 2)) {
           const tw = L.tb.a > L.tb.b ? "me" : "opp";
-          L.g.push({ servedBy: L.server, winner: tw, tb: true });
+          L.g.push({ servedBy: L.server, winner: tw, tb: true, pts: { a: L.tb.a, b: L.tb.b } });
           finishSet({ a: tw==="me"?7:6, b: tw==="me"?6:7, tb: {a:L.tb.a,b:L.tb.b}, winner: tw });
         }
         finishPoint();
@@ -948,7 +1017,7 @@
 
     function finalizeGame(gw) {
       const L = data.live;
-      L.g.push({ servedBy: L.server, winner: gw, tb: false });
+      L.g.push({ servedBy: L.server, winner: gw, tb: false, pts: { a: L.pt.a, b: L.pt.b } });
       if (L.server === "me") { L.m.servGames++; if (gw === "me") L.m.holds++; }
       else { L.m.oppServGames++; if (gw === "me") L.m.breaks++; }
       L.pt = { a:0, b:0 };
@@ -963,6 +1032,7 @@
 
     function finishSet(set) {
       const L = data.live;
+      set.gc = L.g.length;
       L.sets.push(set);
       const wc = {}; L.sets.forEach(s => wc[s.winner] = (wc[s.winner]||0) + 1);
       if (wc["me"] >= setsToWin(L)) { L.winner = "me"; commitMatch(); return; }
@@ -989,7 +1059,7 @@
       L.tb = s.tb ? {...s.tb} : null;
       L.sets = s.sets.map(x=>({...x, tb:x.tb?{...x.tb}:null}));
       L.st = {...s.st}; L.m = s.m ? {...s.m} : null;
-      L.g = s.g.map(x=>({...x})); L.seg = s.seg.map(x=>({...x}));
+      L.g = s.g.map(x=>({...x, pts:x.pts?{...x.pts}:null})); L.seg = s.seg.map(x=>({...x}));
       L.serve = s.serve ? {...s.serve} : null; L.winner = s.winner; L._bp = s._bp;
     }
 
@@ -1034,7 +1104,7 @@
         oppHand: L.oppHand, oppBadOut: L.oppBadOut, oppBadScore: L.oppBadScore, playerAge: data.playerAge, quick: L.quick,
         fmtKey: L.fmtKey, fmt: L.fmt,
         score: L.sets, winner: L.winner, st: {...L.st}, m: L.m ? {...L.m} : null,
-        seg: L.seg.map(x=>({...x}))
+        seg: L.seg.map(x=>({...x})), g: L.g.map(x=>({...x, pts:x.pts?{...x.pts}:null}))
       };
       data.matches.push(match); data.live = null; save(); pushMatch(match);
       selectedReport = match.id;
@@ -1130,6 +1200,7 @@
       }
       btns.innerHTML = html;
       updateOppCallHUD();
+      updateSpinHUD();
     }
     function dots(n, max, side) {
       let s = "";
@@ -1167,7 +1238,17 @@
     function qUndo() {
       const L = data.live; if (!L || !L.quick) return;
       const k = L.st.__qlog.pop(); if (!k) return toast("冇嘢可以撤銷");
-      L.st[k] = Math.max(0, L.st[k]-1); save(); updateQuickHUD(); toast("已撤銷");
+      const s = L.st;
+      if (k.indexOf("spin:") === 0) {
+        const out = k.slice(5);
+        const spinKey = { myOK:"mySpinOK", myErr:"mySpinErr", oppOK:"oppSpinOK", oppErr:"oppSpinErr" }[out];
+        if (spinKey) s[spinKey] = Math.max(0, (s[spinKey]||0) - 1);
+        const ptWon = (out === "myOK" || out === "oppErr");
+        s[ptWon ? "ptWon" : "ptLost"] = Math.max(0, s[ptWon ? "ptWon" : "ptLost"] - 1);
+      } else {
+        s[k] = Math.max(0, s[k]-1);
+      }
+      save(); updateQuickHUD(); toast("已撤銷");
     }
     function qEnd() {
       const L = data.live; if (!L) return;
@@ -1183,9 +1264,12 @@
       const map = {ptWon:"qc-ptWon", ptLost:"qc-ptLost", aces:"qc-aces", winner:"qc-winner", ufe:"qc-ufe", df:"qc-df", firstOK:"qc-firstOK", firstFault:"qc-firstFault"};
       Object.keys(map).forEach(k => { const el = $("#" + map[k]); if (el) el.textContent = s[k]; });
       updateOppCallHUD();
+      updateSpinHUD();
     }
 
     /* ---------- Stats helpers ---------- */
+    function spinRateOf(s) { const a = (s.mySpinOK||0) + (s.mySpinErr||0); return a ? (s.mySpinOK||0)/a : null; }
+    function oppSpinRateOf(s) { const a = (s.oppSpinOK||0) + (s.oppSpinErr||0); return a ? (s.oppSpinOK||0)/a : null; }
     function rates(m) {
       if (m.quick) {
         const s = m.st, total = s.ptWon + s.ptLost, servePts = s.firstOK + s.firstFault + s.df;
@@ -1193,7 +1277,7 @@
           pointRate: total ? s.ptWon/total : null,
           serveInPct: servePts ? s.firstOK/servePts : null,
           dfRate: servePts ? s.df/servePts : null,
-          holdPct:null, breakPct:null, brkConv:null, sp:servePts, total
+          spinRate: spinRateOf(s), holdPct:null, breakPct:null, brkConv:null, sp:servePts, total
         };
       }
       const s = m.st, total = s.pWon+s.pLost;
@@ -1203,6 +1287,7 @@
         pointRate: total ? s.pWon/total : null,
         serveInPct: firstTry ? s.w1in/firstTry : null,
         dfRate: servePts ? s.df/servePts : null,
+        spinRate: spinRateOf(s),
         holdPct: m.m && m.m.servGames ? m.m.holds/m.m.servGames : null,
         breakPct: m.m && m.m.oppServGames ? m.m.breaks/m.m.oppServGames : null,
         brkConv: m.m && m.m.brkPts ? m.m.brkConv/m.m.brkPts : null,
@@ -1210,7 +1295,7 @@
       };
     }
     function avgRates(matches) {
-      const keys = ["pointRate","serveInPct","dfRate","holdPct","breakPct","brkConv"];
+      const keys = ["pointRate","serveInPct","dfRate","spinRate","holdPct","breakPct","brkConv"];
       const coll = {}; keys.forEach(k=>coll[k]=[]);
       matches.forEach(m => { const r = rates(m); keys.forEach(k => { if (r[k]!=null) coll[k].push(r[k]); }); });
       const mean = a => a.length ? a.reduce((x,y)=>x+y,0)/a.length : null;
@@ -1221,6 +1306,52 @@
       if (!m.score || !m.score.length) return t("unfinished");
       return m.score.map(s => `${s.a}–${s.b}`).join(", ");
     }
+    function gamesBySet(m) {
+      if (!m.g || !m.g.length) return [];
+      const out = []; let idx = 0;
+      (m.score || []).forEach((s, i) => {
+        const end = s.gc || (idx + s.a + s.b);
+        out.push({ setNo: i + 1, set: s, games: m.g.slice(idx, end) });
+        idx = end;
+      });
+      if (idx < m.g.length) out.push({ setNo: (m.score||[]).length + 1, set: null, games: m.g.slice(idx) });
+      return out;
+    }
+    function setResultLabel(s) { return s.winner === "me" ? "你贏" : "對手贏"; }
+    function scoreDetailHTML(m) {
+      const groups = gamesBySet(m);
+      if (!groups.length) return "";
+      return groups.map(g => {
+        const setHead = g.set
+          ? `第 ${g.setNo} 盤完 · ${setResultLabel(g.set)} (${g.set.a}–${g.set.b})`
+          : `第 ${g.setNo} 盤（未完場）`;
+        const gamesHTML = g.games.map((gm, j) => {
+          const win = gm.winner === "me";
+          const a = gm.pts ? gm.pts.a : null, b = gm.pts ? gm.pts.b : null;
+          const pts = a == null ? "" : `<b>${win ? "你" : "對手"} ${win ? a+"–"+b : b+"–"+a}</b>`;
+          const gn = gm.tb ? "搶七比分" : `第 ${j+1} 局比分`;
+          return `<div class="r-game"><span class="gn">${gn}</span>${pts}</div>`;
+        }).join("");
+        return `<div class="r-set"><div class="r-set-head">${setHead}</div><div class="r-games">${gamesHTML}</div></div>`;
+      }).join("");
+    }
+    function scoreDetailText(m) {
+      const groups = gamesBySet(m);
+      if (!groups.length) return [];
+      const lines = [];
+      groups.forEach(g => {
+        lines.push(g.set
+          ? `第 ${g.setNo} 盤完 · ${setResultLabel(g.set)} (${g.set.a}–${g.set.b})`
+          : `第 ${g.setNo} 盤（未完場）`);
+        g.games.forEach((gm, j) => {
+          const win = gm.winner === "me";
+          const a = gm.pts ? gm.pts.a : null, b = gm.pts ? gm.pts.b : null;
+          const pts = a == null ? "" : `：${win ? "你" : "對手"} ${win ? a+"–"+b : b+"–"+a}`;
+          lines.push(`  ${gm.tb ? "搶七比分" : "第 "+(j+1)+" 局比分"}${pts}`);
+        });
+      });
+      return lines;
+    }
 
     /* ---------- 對手數據 ＋ 視圖切換 ---------- */
     function oppRates(m) {
@@ -1229,6 +1360,7 @@
         pointRate: total ? s.pLost / total : null,
         serveInPct: null,
         dfRate: null,
+        spinRate: oppSpinRateOf(s),
         holdPct: m.m && m.m.oppServGames ? (m.m.oppServGames - m.m.breaks) / m.m.oppServGames : null,
         breakPct: m.m && m.m.servGames ? (m.m.servGames - m.m.holds) / m.m.servGames : null,
         brkConv: null
@@ -1249,19 +1381,19 @@
     }
     function avgView() {
       const avg = avgRates(data.matches);
-      const items = [[t("stat_pt"), avg.pointRate], [t("stat_first"), avg.serveInPct], [t("stat_df"), avg.dfRate], [t("stat_hold"), avg.holdPct], [t("stat_break"), avg.breakPct], [t("stat_brk"), avg.brkConv]];
+      const items = [[t("stat_pt"), avg.pointRate], [t("stat_first"), avg.serveInPct], [t("stat_df"), avg.dfRate], [t("stat_spin"), avg.spinRate], [t("stat_hold"), avg.holdPct], [t("stat_break"), avg.breakPct], [t("stat_brk"), avg.brkConv]];
       const html = items.map(([n,v]) => `<div class="stat"><div class="name">${n}</div><div class="val">${v==null?"–":Math.round(v*100)+"%"}</div></div>`).join("");
       return `<div class="card"><h3 style="margin-top:0">${t("avg_data")}</h3><p class="muted" style="margin:-6px 0 0">${data.lang==="en"?("Across "+data.matches.length+" matches"):("以 "+data.matches.length+" 場計")}</p><div class="stat-grid">${html}</div></div>`;
     }
     function oppView(m) {
       const or = oppRates(m);
-      const items = [[t("stat_pt"), or.pointRate], [t("stat_first"), or.serveInPct], [t("stat_df"), or.dfRate], [t("stat_hold"), or.holdPct], [t("stat_break"), or.breakPct], [t("stat_brk"), or.brkConv]];
+      const items = [[t("stat_pt"), or.pointRate], [t("stat_first"), or.serveInPct], [t("stat_df"), or.dfRate], [t("stat_spin"), or.spinRate], [t("stat_hold"), or.holdPct], [t("stat_break"), or.breakPct], [t("stat_brk"), or.brkConv]];
       const stat = items.map(([n,v]) => `<div class="stat"><div class="name">${n}</div><div class="val">${v==null?"–":Math.round(v*100)+"%"}</div></div>`).join("");
       return `<div class="card"><h3 style="margin-top:0">${t("opp_perf")}</h3><div class="stat-grid">${stat}</div>${oppMetaHTML(m)}</div>`;
     }
     function compareView(m) {
       const r = rates(m), or = oppRates(m);
-      const rows = [[t("stat_pt"), r.pointRate, or.pointRate], [t("stat_hold"), r.holdPct, or.holdPct], [t("stat_break"), r.breakPct, or.breakPct]];
+      const rows = [[t("stat_pt"), r.pointRate, or.pointRate], [t("stat_spin"), r.spinRate, or.spinRate], [t("stat_hold"), r.holdPct, or.holdPct], [t("stat_break"), r.breakPct, or.breakPct]];
       const html = rows.map(([n,a,b]) => {
         const ap = a==null?"–":Math.round(a*100)+"%", bp = b==null?"–":Math.round(b*100)+"%";
         const aP = a==null?0:Math.round(a*100), bP = b==null?0:Math.round(b*100);
@@ -1303,6 +1435,7 @@
           ${metricBlock("得分率", r.pointRate, avg.pointRate, true, "high")}
           ${metricBlock("一發成功率", r.serveInPct, avg.serveInPct, true, "high")}
           ${metricBlock("雙誤率", r.dfRate, avg.dfRate, true, "low")}
+          ${metricBlock(t("stat_spin"), r.spinRate, avg.spinRate, true, "high")}
         </div>`;
       }
       return statGrid(m, r, avg);
@@ -1325,6 +1458,7 @@
         [t("stat_pt"), r.pointRate, avg.pointRate, true, "high"],
         [t("stat_first"), r.serveInPct, avg.serveInPct, true, "high"],
         [t("stat_df"), r.dfRate, avg.dfRate, true, "low"],
+        [t("stat_spin"), r.spinRate, avg.spinRate, true, "high"],
         [t("stat_hold"), r.holdPct, avg.holdPct, true, "high"],
         [t("stat_break"), r.breakPct, avg.breakPct, true, "high"],
         [t("stat_brk"), r.brkConv, avg.brkConv, true, "high"]
@@ -1365,6 +1499,8 @@
       const pts = [];
       if (r.dfRate != null && r.dfRate > 0.12) pts.push("雙誤率偏高 — 發球放慢節奏，先穩住拋球再出手。");
       else if (r.dfRate != null && r.dfRate > 0.06) pts.push("雙誤有少少多，試吓「持球兩秒再發」。");
+      if (r.spinRate != null && r.spinRate < 0.5) pts.push("旋球成功率偏低 — 多用擊球前嘅手腕，穩定轉速先至加力。");
+      if (r.spinRate != null && r.spinRate >= 0.7) pts.push("旋球成功率高，識得用轉速控制節奏同落點。");
       if (r.serveInPct != null && r.serveInPct < 0.55) pts.push("一發入框率偏低 — 降低力度換取穩定性，先入區再慢慢加力。");
       if (r.serveInPct != null && r.serveInPct >= 0.72) pts.push("一發入框率好高，係你嘅武器。");
       if (r.holdPct != null && r.holdPct < 0.5) pts.push("保住發球局偏低 — 發球係你而家最值得練嘅一環。");
@@ -1437,6 +1573,7 @@
       const tips = [];
       if (r.dfRate != null && r.dfRate > 0.12) tips.push("今日雙誤偏高，建議放慢發球節奏。");
       if (r.serveInPct != null && r.serveInPct < 0.55) tips.push("一發入框率偏低，可降低力度換穩定性。");
+      if (r.spinRate != null && r.spinRate < 0.5) tips.push("旋球成功率偏低，多練習穩定控拍。");
       if (r.holdPct != null && r.holdPct < 0.5) tips.push("保住發球局偏低，發球係重點練嘅方向。");
       if (r.breakPct != null && r.breakPct < 0.3) tips.push("破發把握唔夠，接發多啲主動。");
       if (r.pointRate != null && r.pointRate >= 0.55) tips.push("得分力保持得唔錯。");
@@ -1459,18 +1596,20 @@
       L.push("");
       L.push("「"+(data.lang==="en"?"Score / Result":"比數／結果")+"」");
       if (m.quick) L.push(`總得分：${m.st.ptWon}–${m.st.ptLost}`);
-      else { L.push(`比數：${scoreLine(m)}`); L.push(`結果：${m.winner ? (m.winner === "me" ? "你贏" : "對手贏") : "未完場"}`); }
+      else { L.push(`比數：${scoreLine(m)}`); L.push(`結果：${m.winner ? (m.winner === "me" ? "你贏" : "對手贏") : "未完場"}`); scoreDetailText(m).forEach(x => L.push(x)); }
       L.push("");
       L.push("「"+(data.lang==="en"?"Data":"數據")+"」");
       if (viewMode === "opp") {
         L.push(`得分率：${pct(or.pointRate)}`);
         L.push(`一發入框率：${pct(or.serveInPct)}`);
         L.push(`雙誤率：${pct(or.dfRate)}`);
+        L.push(`旋球成功率：${pct(or.spinRate)}`);
         L.push(`保住發球局：${pct(or.holdPct)}`);
         L.push(`破發成功率：${pct(or.breakPct)}`);
         L.push(`破發點轉化：${pct(or.brkConv)}`);
       } else if (viewMode === "cmp") {
         L.push(`得分率：我 ${pct(r.pointRate)} / 對手 ${pct(or.pointRate)}`);
+        L.push(`旋球成功率：我 ${pct(r.spinRate)} / 對手 ${pct(or.spinRate)}`);
         L.push(`保住發球局：我 ${pct(r.holdPct)} / 對手 ${pct(or.holdPct)}`);
         L.push(`破發成功率：我 ${pct(r.breakPct)} / 對手 ${pct(or.breakPct)}`);
       } else if (viewMode === "avg") {
@@ -1478,17 +1617,20 @@
         L.push(`平均得分率：${pct(av.pointRate)}`);
         L.push(`平均一發入框率：${pct(av.serveInPct)}`);
         L.push(`平均雙誤率：${pct(av.dfRate)}`);
+        L.push(`平均旋球成功率：${pct(av.spinRate)}`);
         L.push(`平均保住發球局：${pct(av.holdPct)}`);
         L.push(`平均破發成功率：${pct(av.breakPct)}`);
       } else if (m.quick) {
         L.push(`得分率：${pct(r.pointRate)}`);
         L.push(`一發入框率：${pct(r.serveInPct)}`);
         L.push(`雙誤率：${pct(r.dfRate)}`);
+        L.push(`旋球成功率：${pct(r.spinRate)}`);
         L.push(`Ace：${m.st.aces}　致勝球：${m.st.winner}　非受迫失誤：${m.st.ufe}`);
       } else {
         L.push(`得分率：${pct(r.pointRate)}`);
         L.push(`一發入框率：${pct(r.serveInPct)}`);
         L.push(`雙誤率：${pct(r.dfRate)}`);
+        L.push(`旋球成功率：${pct(r.spinRate)}`);
         L.push(`保住發球局：${pct(r.holdPct)}`);
         L.push(`破發成功率：${pct(r.breakPct)}`);
         L.push(`破發點轉化：${pct(r.brkConv)}`);
@@ -1507,20 +1649,20 @@
       const av = avgRates(data.matches);
       const row = (k, v) => `<div class="r-row"><span class="k">${k}</span><span class="v">${v}</span></div>`;
       const dataRows = viewMode === "opp"
-        ? row("得分率", pct(or.pointRate)) + row("一發入框率", pct(or.serveInPct)) + row("雙誤率", pct(or.dfRate)) + row("保住發球局", pct(or.holdPct)) + row("破發成功率", pct(or.breakPct)) + row("破發點轉化", pct(or.brkConv))
+        ? row("得分率", pct(or.pointRate)) + row("一發入框率", pct(or.serveInPct)) + row("雙誤率", pct(or.dfRate)) + row("旋球成功率", pct(or.spinRate)) + row("保住發球局", pct(or.holdPct)) + row("破發成功率", pct(or.breakPct)) + row("破發點轉化", pct(or.brkConv))
         : viewMode === "avg"
-          ? row("平均得分率", pct(av.pointRate)) + row("平均一發入框率", pct(av.serveInPct)) + row("平均雙誤率", pct(av.dfRate)) + row("平均保住發球局", pct(av.holdPct)) + row("平均破發成功率", pct(av.breakPct))
+          ? row("平均得分率", pct(av.pointRate)) + row("平均一發入框率", pct(av.serveInPct)) + row("平均雙誤率", pct(av.dfRate)) + row("平均旋球成功率", pct(av.spinRate)) + row("平均保住發球局", pct(av.holdPct)) + row("平均破發成功率", pct(av.breakPct))
           : viewMode === "cmp"
-          ? row("得分率", `我 ${pct(r.pointRate)} / 對 ${pct(or.pointRate)}`) + row("保住發球局", `我 ${pct(r.holdPct)} / 對 ${pct(or.holdPct)}`) + row("破發成功率", `我 ${pct(r.breakPct)} / 對 ${pct(or.breakPct)}`)
+          ? row("得分率", `我 ${pct(r.pointRate)} / 對 ${pct(or.pointRate)}`) + row("旋球成功率", `我 ${pct(r.spinRate)} / 對 ${pct(or.spinRate)}`) + row("保住發球局", `我 ${pct(r.holdPct)} / 對 ${pct(or.holdPct)}`) + row("破發成功率", `我 ${pct(r.breakPct)} / 對 ${pct(or.breakPct)}`)
           : (m.quick
-              ? row("得分率", pct(r.pointRate)) + row("一發入框率", pct(r.serveInPct)) + row("雙誤率", pct(r.dfRate)) + row("Ace", m.st.aces) + row("致勝球", m.st.winner)
-              : row("得分率", pct(r.pointRate)) + row("一發入框率", pct(r.serveInPct)) + row("雙誤率", pct(r.dfRate)) + row("保住發球局", pct(r.holdPct)) + row("破發成功率", pct(r.breakPct)) + row("破發點轉化", pct(r.brkConv)));
+              ? row("得分率", pct(r.pointRate)) + row("一發入框率", pct(r.serveInPct)) + row("雙誤率", pct(r.dfRate)) + row("旋球成功率", pct(r.spinRate)) + row("Ace", m.st.aces) + row("致勝球", m.st.winner)
+              : row("得分率", pct(r.pointRate)) + row("一發入框率", pct(r.serveInPct)) + row("雙誤率", pct(r.dfRate)) + row("旋球成功率", pct(r.spinRate)) + row("保住發球局", pct(r.holdPct)) + row("破發成功率", pct(r.breakPct)) + row("破發點轉化", pct(r.brkConv)));
       const tips = coachTips(m, r).map(t => `<div class="r-tip">· ${t}</div>`).join("");
       const sub = `${data.player || "球手"}${m.playerAge ? " · " + m.playerAge + "歲" : ""} · ${new Date(m.ts).toLocaleDateString("zh-Hant-HK")}`;
       return `<div class="r-title">TENNIS COUNTER</div>
         <div class="r-sub">${esc(sub)}</div>
         <div class="r-sub">${esc(m.event || "—")}${m.stage ? " · " + esc(m.stage) : ""}${m.division ? " · " + esc(m.division) : ""} · 對手 ${esc(m.opp || "未命名")}</div>
-        <div class="r-sec"><h4>比數 / 結果</h4>${m.quick ? row("總得分", m.st.ptWon + "–" + m.st.ptLost) : row("比數", esc(scoreLine(m))) + row("結果", m.winner ? (m.winner === "me" ? "你贏" : "對手贏") : "未完場")}</div>
+        <div class="r-sec"><h4>比數 / 結果</h4>${m.quick ? row("總得分", m.st.ptWon + "–" + m.st.ptLost) : row("比數", esc(scoreLine(m))) + row("結果", m.winner ? (m.winner === "me" ? "你贏" : "對手贏") : "未完場") + scoreDetailHTML(m)}</div>
         <div class="r-sec"><h4>數據</h4>${dataRows}</div>
         <div class="r-sec"><h4>對手數據</h4>
           <div class="r-row"><span class="k">慣用手</span><span class="v">${oppHandLabel(m.oppHand)}</span></div>
@@ -1658,6 +1800,8 @@
       q3:["失分係學習，唔係失敗。下一分，重新嚟。—— 教練 Ray","Losing a point is learning, not failing. Next point, start fresh. \u2014 Coach Ray"],
       q4:["發球前深呼吸一下，放鬆肩膀。—— 教練 Ray","Before serving, breathe and relax your shoulders. \u2014 Coach Ray"],
       stat_pt:["得分率","Point rate"], stat_first:["一發入框率","First-serve in"], stat_df:["雙誤率","Double-fault rate"], stat_hold:["保住發球局","Hold serve"], stat_break:["破發成功率","Break conversion"], stat_brk:["破發點轉化","Break-point won"],
+      stat_spin:["旋球成功率","Spin success"], spin_title:["🌀 旋球得失分","🌀 Spin shots"], spin_me_tab:["自己","Me"], spin_opp_tab:["對手","Opponent"],
+      spin_my_ok:["旋球成功 · 我贏","Spin in · I win"], spin_my_err:["旋球失誤 · 我輸","Spin error · I lose"], spin_opp_ok:["旋球成功 · 對手贏","Opp spin in · they win"], spin_opp_err:["旋球失誤 · 對手輸","Opp spin error · they lose"],
       l_me:["我","Me"], l_opp:["對手","Opp"], first_rec:["首場紀錄","First match"], hi_avg:["高於平均","Above avg"], lo_avg:["低於平均","Below avg"], near_avg:["貼近平均","Near avg"],
       win_title:["你贏咗！🎉","You won! 🎉"], lose_title:["對手贏咗","Opponent won"], unfinished2:["未完場","Unfinished"], win_unit:["勝","W"], lose_unit:["負","L"],
       today_best:["今日最佳：","Best today: "], neutral_note:["整體表現平均，繼續累積數據睇趨勢。","Solid overall. Keep stacking data to see your trend."], nervous_note:["你今日克服咗開局緊張，已經進步咗。","You pushed through the early nerves today.—that’s real progress."],
