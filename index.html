@@ -391,10 +391,10 @@
     .r-tip { font-size: 0.9rem; margin: 4px 0; line-height: 1.5; }
     .r-set { margin-top: 12px; }
     .r-set-head { font-weight: 800; font-size: 0.88rem; margin-bottom: 6px; color: var(--accent-deep); }
-    .r-games { display: flex; flex-wrap: wrap; gap: 6px 14px; }
-    .r-game { font-size: 0.82rem; }
+    .r-games { display: flex; flex-direction: column; gap: 5px; }
+    .r-game { font-size: 0.84rem; line-height: 1.45; }
     .r-game .gn { color: var(--muted); }
-    .r-game b { color: var(--ink); font-weight: 700; margin-left: 4px; }
+    .r-game b { color: var(--ink); font-weight: 700; }
     .opp-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
     .cmpbar { position: relative; height: 12px; background: var(--paper-2); border-radius: 999px; }
     .cmpbar-fill { height: 100%; border-radius: 999px; background: var(--lime); }
@@ -950,7 +950,7 @@
         server: quick ? null : $("#firstServer").value,
         sets: [], cur: {a:0,b:0}, pt: {a:0,b:0}, tb: null, g: [],
         st: quick ? {ptWon:0,ptLost:0,aces:0,winner:0,ufe:0,df:0,firstOK:0,firstFault:0,mySpinOK:0,mySpinErr:0,oppSpinOK:0,oppSpinErr:0,__qlog:[]}
-                  : {pWon:0,pLost:0,spWon:0,spLost:0,rpWon:0,rpLost:0,aces:0,df:0,w1in:0,w2in:0,firstFault:0,mySpinOK:0,mySpinErr:0,oppSpinOK:0,oppSpinErr:0},
+                  : {pWon:0,pLost:0,spWon:0,spLost:0,rpWon:0,rpLost:0,aces:0,df:0,w1in:0,w2in:0,firstFault:0,mySpinOK:0,mySpinErr:0,oppSpinOK:0,oppSpinErr:0,oAce:0,oW1in:0,oW2in:0,oFirstFault:0,oDF:0},
         m: quick ? null : {holds:0,servGames:0,breaks:0,oppServGames:0,brkPts:0,brkConv:0},
         seg: [], serve: null, log: [], winner: null, _bp: false, _snapReady: true
       };
@@ -1027,7 +1027,7 @@
 
     function finalizeGame(gw) {
       const L = data.live;
-      L.g.push({ servedBy: L.server, winner: gw, tb: false, pts: { a: L.pt.a, b: L.pt.b } });
+      L.g.push({ servedBy: L.server, winner: gw, tb: false, pts: { a: L.pt.a, b: L.pt.b }, deuces: L.fmt.ad ? Math.max(0, Math.max(L.pt.a, L.pt.b) - 4) : 0 });
       if (L.server === "me") { L.m.servGames++; if (gw === "me") L.m.holds++; }
       else { L.m.oppServGames++; if (gw === "me") L.m.breaks++; }
       L.pt = { a:0, b:0 };
@@ -1060,7 +1060,7 @@
         server:L.server, firstServer:L.firstServer, pt:{...L.pt}, cur:{...L.cur},
         tb: L.tb ? {...L.tb} : null, sets:L.sets.map(s=>({...s, tb:s.tb?{...s.tb}:null})),
         st:{...L.st}, m:L.m?{...L.m}:null, g:L.g.map(x=>({...x})), seg:L.seg.map(x=>({...x})),
-        serve:L.serve?{...L.serve}:null, winner:L.winner, _bp:L._bp
+        serve:L.serve?{...L.serve}:null, oserve:L.oserve?{...L.oserve}:null, winner:L.winner, _bp:L._bp
       };
     }
     function restoreState(s) {
@@ -1071,7 +1071,7 @@
       L.sets = s.sets.map(x=>({...x, tb:x.tb?{...x.tb}:null}));
       L.st = {...s.st}; L.m = s.m ? {...s.m} : null;
       L.g = s.g.map(x=>({...x, pts:x.pts?{...x.pts}:null})); L.seg = s.seg.map(x=>({...x}));
-      L.serve = s.serve ? {...s.serve} : null; L.winner = s.winner; L._bp = s._bp;
+      L.serve = s.serve ? {...s.serve} : null; L.oserve = s.oserve ? {...s.oserve} : null; L.winner = s.winner; L._bp = s._bp;
     }
 
     function beginMyServe() { const L = data.live; L.serve = { phase:"first", firstIn:false, second:false }; }
@@ -1101,6 +1101,7 @@
       if (!L.log.length) return toast("啱啱冇分可以撤銷");
       restoreState(L.log.pop());
       L._choose = false;
+      L._ochoose = false;
       L._snapReady = false;
       vibrate(15);
       renderLive();
@@ -1209,7 +1210,7 @@
         html = serveBtnHTML();
       } else {
         title.textContent = "🎾 我接發 · 記呢分";
-        html = returnBtnHTML();
+        html = oppServeBtnHTML();
       }
       btns.innerHTML = html;
       updateOppCallHUD();
@@ -1243,8 +1244,44 @@
     function showFaultChoice() { const L = data.live; if (!L || L.quick) return; L._choose = true; renderLive(); vibrate(15); }
     function cancelFaultChoice() { const L = data.live; if (!L) return; L._choose = false; renderLive(); }
     function returnBtnHTML() {
-      return `<button class="big-pick pick-win" onclick="actReturn('me')">🎾 我得分<span class="sub">成功破發 / 得分</span></button>
-              <button class="big-pick pick-lose" onclick="actReturn('opp')">⚠️ 對手得分<span class="sub">對方保住發球</span></button>`;
+      return `<button class="counter tone-green" onclick="actReturn('me')"><span class="emo">🎾</span>${t("ret_win")}<span class="cnt">${t("ret_win_sub")}</span></button>
+              <button class="counter tone-clay" onclick="actReturn('opp')"><span class="emo">⚠️</span>${t("ret_lose")}<span class="cnt">${t("ret_lose_sub")}</span></button>`;
+    }
+    // opponent is serving (I am returning): record THEIR serve outcome
+    function oppServeBtnHTML() {
+      const L = data.live, phase = L.oserve ? L.oserve.phase : "first";
+      if (phase === "second") {
+        return `<button class="counter tone-green" onclick="actOppServe('oW2in')"><span class="emo">✅</span>${t("oserve_w2")}<span class="cnt">${t("oserve_rally")}</span></button>
+                <button class="counter tone-clay" onclick="actOppServe('oDF')"><span class="emo">🚫</span>${t("oserve_df")}<span class="cnt">${t("oserve_iwin")}</span></button>`;
+      }
+      if (phase === "rally") {
+        return `<button class="big-pick pick-win" onclick="actOppServe('winRally')">🎾 ${t("ret_win")}<span class="sub">${t("ret_win_sub")}</span></button>
+                <button class="big-pick pick-lose" onclick="actOppServe('loseRally')">⚠️ ${t("ret_lose")}<span class="sub">${t("ret_lose_sub")}</span></button>`;
+      }
+      if (L._ochoose) {
+        return `<button class="counter tone-clay" onclick="actOppServe('oFirstFault')"><span class="emo">❌</span>${t("fault_1st")}<span class="cnt">${t("fault_to2nd")}</span></button>
+                <button class="counter tone-clay" onclick="actOppServe('oDFDirect')"><span class="emo">🚫</span>${t("oserve_df")}<span class="cnt">${t("oserve_iwin")}</span></button>
+                <button class="counter tone-clay" onclick="actOppServe('loseRally')"><span class="emo">⚠️</span>${t("ret_lose")}<span class="cnt">${t("oserve_oppwin")}</span></button>
+                <button class="counter" onclick="cancelOppFaultChoice()"><span class="emo">↩︎</span>${t("fault_back")}</button>`;
+      }
+      return `<button class="counter tone-green" onclick="actOppServe('oAce')"><span class="emo">💥</span>${t("oserve_ace")}<span class="cnt">${t("oserve_oppwin")}</span></button>
+              <button class="counter tone-green" onclick="actOppServe('oW1in')"><span class="emo">✅</span>${t("oserve_w1in")}<span class="cnt">${t("oserve_rally")}</span></button>
+              <button class="counter tone-clay" onclick="showOppFaultChoice()"><span class="emo">❌</span>${t("oserve_w1f")}<span class="cnt">${t("fault_tap")}</span></button>`;
+    }
+    function showOppFaultChoice() { const L = data.live; if (!L || L.quick) return; L._ochoose = true; renderLive(); vibrate(15); }
+    function cancelOppFaultChoice() { const L = data.live; if (!L) return; L._ochoose = false; renderLive(); }
+    function actOppServe(type) {
+      const L = data.live; if (!L || L.quick) return;
+      snapIfNeeded();
+      L._ochoose = false;
+      if (type === "oAce") { L.st.oAce++; L.st.oW1in++; L.oserve = null; decidePoint("opp"); vibrate(30); }
+      else if (type === "oW1in") { L.st.oW1in++; L.oserve = { phase:"rally" }; vibrate(15); renderLive(); }
+      else if (type === "oFirstFault") { L.st.oFirstFault++; L.oserve = { phase:"second" }; vibrate(15); renderLive(); }
+      else if (type === "oW2in") { L.st.oW2in++; L.oserve = { phase:"rally" }; vibrate(15); renderLive(); }
+      else if (type === "oDF") { L.st.oDF++; L.oserve = null; decidePoint("me"); vibrate(30); }
+      else if (type === "oDFDirect") { L.st.oFirstFault++; L.st.oDF++; L.oserve = null; decidePoint("me"); vibrate(30); }
+      else if (type === "winRally") { L.oserve = null; decidePoint("me"); vibrate(30); }
+      else if (type === "loseRally") { L.oserve = null; decidePoint("opp"); vibrate(30); }
     }
 
     /* ---------- Quick mode ---------- */
@@ -1339,6 +1376,22 @@
       return out;
     }
     function setResultLabel(s) { return s.winner === "me" ? "你贏" : "對手贏"; }
+    function tennisScore(n) { return n <= 0 ? "0" : n === 1 ? "15" : n === 2 ? "30" : "40"; }
+    function gameLine(gm, j) {
+      const win = gm.winner === "me";
+      const winner = win ? "你" : "對手", loser = win ? "對手" : "你";
+      const a = gm.pts ? gm.pts.a : null, b = gm.pts ? gm.pts.b : null;
+      if (gm.tb) {
+        const sc = a == null ? "" : `${winner} ${win ? a+"–"+b : b+"–"+a}`;
+        return { label: "搶七比分：", body: sc, deuce: false };
+      }
+      const label = `第 ${j+1} 局比分：`;
+      if (a == null) return { label, body: `${winner}贏`, deuce: false };
+      const loserPts = win ? b : a;
+      let body = `${winner}贏，${loser}${tennisScore(loserPts)}分`;
+      if (gm.deuces) body += `，今局有${gm.deuces}個Deuce`;
+      return { label, body, deuce: !!gm.deuces };
+    }
     function scoreDetailHTML(m) {
       const groups = gamesBySet(m);
       if (!groups.length) return "";
@@ -1347,11 +1400,8 @@
           ? `第 ${g.setNo} 盤完 · ${setResultLabel(g.set)} (${g.set.a}–${g.set.b})`
           : `第 ${g.setNo} 盤（未完場）`;
         const gamesHTML = g.games.map((gm, j) => {
-          const win = gm.winner === "me";
-          const a = gm.pts ? gm.pts.a : null, b = gm.pts ? gm.pts.b : null;
-          const pts = a == null ? "" : `<b>${win ? "你" : "對手"} ${win ? a+"–"+b : b+"–"+a}</b>`;
-          const gn = gm.tb ? "搶七比分" : `第 ${j+1} 局比分`;
-          return `<div class="r-game"><span class="gn">${gn}</span>${pts}</div>`;
+          const ln = gameLine(gm, j);
+          return `<div class="r-game${ln.deuce ? " has-deuce" : ""}"><span class="gn">${ln.label}</span><b>${ln.body}</b></div>`;
         }).join("");
         return `<div class="r-set"><div class="r-set-head">${setHead}</div><div class="r-games">${gamesHTML}</div></div>`;
       }).join("");
@@ -1364,12 +1414,7 @@
         lines.push(g.set
           ? `第 ${g.setNo} 盤完 · ${setResultLabel(g.set)} (${g.set.a}–${g.set.b})`
           : `第 ${g.setNo} 盤（未完場）`);
-        g.games.forEach((gm, j) => {
-          const win = gm.winner === "me";
-          const a = gm.pts ? gm.pts.a : null, b = gm.pts ? gm.pts.b : null;
-          const pts = a == null ? "" : `：${win ? "你" : "對手"} ${win ? a+"–"+b : b+"–"+a}`;
-          lines.push(`  ${gm.tb ? "搶七比分" : "第 "+(j+1)+" 局比分"}${pts}`);
-        });
+        g.games.forEach((gm, j) => { const ln = gameLine(gm, j); lines.push("  " + ln.label + ln.body); });
       });
       return lines;
     }
@@ -1377,10 +1422,12 @@
     /* ---------- 對手數據 ＋ 視圖切換 ---------- */
     function oppRates(m) {
       const s = m.st, total = s.pWon + s.pLost;
+      const oFirstTry = (s.oW1in||0) + (s.oFirstFault||0);
+      const oServePts = (s.oW1in||0) + (s.oW2in||0) + (s.oDF||0);
       return {
         pointRate: total ? s.pLost / total : null,
-        serveInPct: null,
-        dfRate: null,
+        serveInPct: oFirstTry ? (s.oW1in||0)/oFirstTry : null,
+        dfRate: oServePts ? (s.oDF||0)/oServePts : null,
         spinRate: oppSpinRateOf(s),
         holdPct: m.m && m.m.oppServGames ? (m.m.oppServGames - m.m.breaks) / m.m.oppServGames : null,
         breakPct: m.m && m.m.servGames ? (m.m.servGames - m.m.holds) / m.m.servGames : null,
@@ -1612,6 +1659,7 @@
       L.push(`賽事：${m.event || "—"}`);
       L.push(`階段：${m.stage || "—"}${m.division ? "　組別：" + m.division : ""}`);
       L.push(`對手：${m.opp || "未命名"}（慣用手：${oppHandLabel(m.oppHand)}）`);
+      if (m.st.oAce) L.push(`對手 Ace：${m.st.oAce} 次`);
       L.push(`對手亂Call：Out ${m.oppBadOut || 0} 次 ／ 分數 ${m.oppBadScore || 0} 次`);
       L.push(`模式：${m.quick ? "快速計數" : (fmtName[m.fmtKey] || "—")}`);
       L.push("");
@@ -1687,6 +1735,7 @@
         <div class="r-sec"><h4>數據</h4>${dataRows}</div>
         <div class="r-sec"><h4>對手數據</h4>
           <div class="r-row"><span class="k">慣用手</span><span class="v">${oppHandLabel(m.oppHand)}</span></div>
+          ${m.st.oAce ? '<div class="r-row"><span class="k">Ace</span><span class="v">' + m.st.oAce + ' 次</span></div>' : ""}
           <div class="r-row"><span class="k">亂Call「Out」</span><span class="v">${m.oppBadOut || 0} 次</span></div>
           <div class="r-row"><span class="k">亂Call「分數」</span><span class="v">${m.oppBadScore || 0} 次</span></div>
         </div>
@@ -1833,6 +1882,9 @@
       row_hand2:["慣用手","Dominant hand"], row_out:["亂Call「Out」","Bad “Out”"], row_sc:["亂Call「分數」","Bad score"], row_goal2:["目標","Goal"], row_date2:["下場日期","Next date"], row_pts:["得分","Points"],
       set_lbl:["第","Set "], tie_break:["分"," pts"], serve_pill_i:["我發球","I serve"], serve_pill_r:["我接發","I return"],
       serve_ace:["Ace","Ace"], serve_w1in:["一發入","1st in"], serve_w1f:["一發失誤","1st fault"], serve_w2:["二發成功","2nd in"], serve_df:["雙誤（送分）","Double fault"], serve_win:["我嬴呢分","I win point"], serve_lose:["我輸呢分","I lose point"], record_pt:["記呢分","record point"],
+      ret_win:["我得分","I win point"], ret_win_sub:["成功破發 / 得分","Break / point won"], ret_lose:["對手得分","Opponent scores"], ret_lose_sub:["對方保住發球","Opponent holds"],
+      oserve_ace:["對手 Ace","Opp Ace"], oserve_w1in:["一發入","1st in"], oserve_w1f:["一發失誤","1st fault"], oserve_w2:["二發成功","2nd in"],
+      oserve_df:["二發落網送分","2nd serve net"], oserve_oppwin:["對手贏呢分","Opp wins point"], oserve_iwin:["我贏呢分","I win point"], oserve_rally:["繼續打","Rally"],
       q5:["年青球員最緊要係享受比賽，同時留低進步空間。—— 教練 Ray","Enjoy the game and leave room to grow. \u2014 Coach Ray"]
     };
     function t(k) { const a = I18N[k]; if (!a) return k; return a[data.lang === "en" ? 1 : 0]; }
