@@ -901,7 +901,7 @@
         s.__qlog.push("spin:" + out);
         save(); updateQuickHUD(); vibrate(30); return;
       }
-      L.serve = null;
+      L.serve = null; L.oserve = null; L._choose = false; L._ochoose = false;
       decidePoint(winner);
       vibrate(30);
     }
