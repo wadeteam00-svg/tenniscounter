@@ -456,10 +456,10 @@
 
       <div class="card">
         <div class="eyebrow" data-i18n="setup_eyebrow">快速設定</div>
-        <div class="field"><label for="playerName" data-i18n="player_name">球手名字</label><input id="playerName" type="text" placeholder="例如：小傑" /></div>
-        <div class="field"><label for="playerAge" data-i18n="player_age">球手年齡</label><input id="playerAge" type="number" inputmode="numeric" min="1" max="99" placeholder="例如：10" /></div>
+        <div class="field"><label for="playerName" data-i18n="player_name">球手名字</label><input id="playerName" type="text" data-i18n-ph="ph_player" placeholder="例如：小傑" /></div>
+        <div class="field"><label for="playerAge" data-i18n="player_age">球手年齡</label><input id="playerAge" type="number" inputmode="numeric" min="1" max="99" data-i18n-ph="ph_age" placeholder="例如：10" /></div>
         <div class="field"><label for="nextMatch" data-i18n="next_match">下一場比賽日期時間</label><input id="nextMatch" type="datetime-local" /></div>
-        <div class="field"><label for="nextNote" data-i18n="next_note">目標或備註</label><input id="nextNote" type="text" placeholder="例如：雙誤控制喺 5 次內" /></div>
+        <div class="field"><label for="nextNote" data-i18n="next_note">目標或備註</label><input id="nextNote" type="text" data-i18n-ph="ph_note" placeholder="例如：雙誤控制喺 5 次內" /></div>
         <button class="btn btn-ghost btn-block" onclick="saveQuickSettings()" data-i18n="save">儲存設定</button>
       </div>
 
@@ -480,11 +480,11 @@
         <div class="card">
           <div class="eyebrow" data-i18n="rec_eyebrow">開始記錄</div>
           <h2 style="margin-top:2px" data-i18n="rec_title">記錄今場</h2>
-          <div class="field"><label for="eventName" data-i18n="rec_event">賽事名稱</label><input id="eventName" type="text" placeholder="例如：週末盃" /></div>
-          <div class="field"><label for="oppName" data-i18n="rec_opp">對手名稱</label><input id="oppName" type="text" placeholder="例如：小明" /></div>
+          <div class="field"><label for="eventName" data-i18n="rec_event">賽事名稱</label><input id="eventName" type="text" data-i18n-ph="ph_event" placeholder="例如：週末盃" /></div>
+          <div class="field"><label for="oppName" data-i18n="rec_opp">對手名稱</label><input id="oppName" type="text" data-i18n-ph="ph_opp" placeholder="例如：小明" /></div>
           <div class="field">
             <label for="stageName" data-i18n="rec_stage">階段</label>
-            <input id="stageName" type="text" list="stageList" placeholder="例如：小組賽" />
+            <input id="stageName" type="text" list="stageList" data-i18n-ph="ph_stage" placeholder="例如：小組賽" />
             <datalist id="stageList">
               <option value="練習賽"></option>
               <option value="友誼賽"></option>
@@ -497,7 +497,7 @@
 
           <div class="field">
             <label for="divisionName" data-i18n="rec_division">組別</label>
-            <input id="divisionName" type="text" list="divisionList" placeholder="例如：U12" />
+            <input id="divisionName" type="text" list="divisionList" data-i18n-ph="ph_division" placeholder="例如：U12" />
             <datalist id="divisionList">
               <option value="U8"></option>
               <option value="U10"></option>
@@ -527,19 +527,19 @@
           <div id="fmtField">
             <div class="field"><label for="fmtSel" data-i18n="rec_fmt">賽制</label>
               <select id="fmtSel" onchange="toggleCustomFmt()">
-                <option value="bo3ad">3 盤 2 勝 · 全 Ad (正式) · 搶 7</option>
-                <option value="bo3noad">3 盤 2 勝 · No Ad · 搶 7</option>
-                <option value="bo5ad">5 盤 3 勝 · 全 Ad (正式) · 搶 7</option>
-                <option value="bo5noad">5 盤 3 勝 · No Ad · 搶 7</option>
-                <option value="cn4">國內制 · 一盤 4 局 · No Ad · 搶 7 一分決勝</option>
-                <option value="cn6">國內制 · 一盤 6 局 · No Ad · 搶 7 一分決勝</option>
-                <option value="custom">自訂</option>
+                <option value="bo3ad" data-i18n="fmt_o_bo3ad">3 盤 2 勝 · 全 Ad (正式) · 搶 7</option>
+                <option value="bo3noad" data-i18n="fmt_o_bo3noad">3 盤 2 勝 · No Ad · 搶 7</option>
+                <option value="bo5ad" data-i18n="fmt_o_bo5ad">5 盤 3 勝 · 全 Ad (正式) · 搶 7</option>
+                <option value="bo5noad" data-i18n="fmt_o_bo5noad">5 盤 3 勝 · No Ad · 搶 7</option>
+                <option value="cn4" data-i18n="fmt_o_cn4">國內制 · 一盤 4 局 · No Ad · 搶 7 一分決勝</option>
+                <option value="cn6" data-i18n="fmt_o_cn6">國內制 · 一盤 6 局 · No Ad · 搶 7 一分決勝</option>
+                <option value="custom" data-i18n="fmt_o_custom">自訂</option>
               </select>
             </div>
             <div id="customFmt" style="display:none">
-              <div class="field"><label for="cGames">每盤幾局先贏</label><input id="cGames" type="number" inputmode="numeric" min="1" max="10" value="6" /><p class="muted" style="font-size:0.78rem;margin:4px 0 0">例如：贏 6 局（即 6:6 打 tie break）</p></div>
-              <div class="field"><label for="cSets">全場幾多盤 (Best of)</label><input id="cSets" type="number" inputmode="numeric" min="0" max="10" value="3" /><p class="muted" style="font-size:0.78rem;margin:4px 0 0">0 或 1 = 單盤（唔顯示盤數）· 3 = 三盤兩勝 · 5 = 五盤三勝</p></div>
-              <div class="field"><label for="cTB">Tie Break 分數</label><input id="cTB" type="number" inputmode="numeric" min="1" max="10" value="7" /><p class="muted" style="font-size:0.78rem;margin:4px 0 0">到呢分後要領先 2 分先贏（7:7 → 9:7）</p></div>
+              <div class="field"><label for="cGames" data-i18n="c_games">每盤幾局先贏</label><input id="cGames" type="number" inputmode="numeric" min="1" max="10" value="6" /><p class="muted" style="font-size:0.78rem;margin:4px 0 0" data-i18n="c_games_hint">例如：贏 6 局（即 6:6 打 tie break）</p></div>
+              <div class="field"><label for="cSets" data-i18n="c_sets">全場幾多盤 (Best of)</label><input id="cSets" type="number" inputmode="numeric" min="0" max="10" value="3" /><p class="muted" style="font-size:0.78rem;margin:4px 0 0" data-i18n="c_sets_hint">0 或 1 = 單盤（唔顯示盤數）· 3 = 三盤兩勝 · 5 = 五盤三勝</p></div>
+              <div class="field"><label for="cTB" data-i18n="c_tb">Tie Break 分數</label><input id="cTB" type="number" inputmode="numeric" min="1" max="10" value="7" /><p class="muted" style="font-size:0.78rem;margin:4px 0 0" data-i18n="c_tb_hint">到呢分後要領先 2 分先贏（7:7 → 9:7）</p></div>
             </div>
             <div class="field"><label for="firstServer" data-i18n="rec_first">邊個開波先?</label>
               <select id="firstServer"><option value="me" data-i18n="me_lbl">我</option><option value="opp" data-i18n="opp_lbl">對手</option></select>
@@ -548,7 +548,7 @@
 
           <button class="btn btn-primary btn-block" onclick="beginMatch()" data-i18n="start">開始比賽 ▶</button>
         </div>
-        <div class="disclaim">完整計分會自動推進 局數／盤數、處理 Deuce 同 Tie-break，並分辨「我發球／我接發」。</div>
+        <div class="disclaim" data-i18n="disclaim">完整計分會自動推進 局數／盤數、處理 Deuce 同 Tie-break，並分辨「我發球／我接發」。</div>
       </div>
 
       <!-- FULL live -->
@@ -580,7 +580,7 @@
         <div class="badge info" id="keyBadge" style="display:none">破發點</div>
 
         <div class="group" id="serveFlow">
-          <h3 id="serveTitle">🎾 點解呢分</h3>
+          <h3 id="serveTitle" data-i18n="serve_title">🎾 點解呢分</h3>
           <div class="grid" id="serveButtons"></div>
         </div>
 
@@ -608,7 +608,7 @@
             <button class="chip" data-mood="nervous">😰<span data-i18n="mood_nervous">緊張</span></button>
             <button class="chip" data-mood="down">😞<span data-i18n="mood_down">沮喪</span></button>
           </div>
-          <p class="muted" style="font-size:0.82rem;margin-bottom:0">喺某啲時刻（例如開局緊張）可以撳一下記低。</p>
+          <p class="muted" style="font-size:0.82rem;margin-bottom:0" data-i18n="mood_hint">喺某啲時刻（例如開局緊張）可以撳一下記低。</p>
         </div>
 
         <div class="group">
@@ -624,23 +624,23 @@
       <div id="recordLiveQuick" style="display:none">
         <div class="eyebrow" id="qLiveOpp"></div>
         <div class="scoreboard" style="margin-top:8px">
-          <div class="score-pane won" id="qWonPane"><div class="n" id="qWon">0</div><div class="lab">得分</div></div>
-          <div class="score-pane lost"><div class="n" id="qLost">0</div><div class="lab">失分</div></div>
+          <div class="score-pane won" id="qWonPane"><div class="n" id="qWon">0</div><div class="lab" data-i18n="pts">得分</div></div>
+          <div class="score-pane lost"><div class="n" id="qLost">0</div><div class="lab" data-i18n="lost">失分</div></div>
         </div>
-        <div class="group"><h3>🎾 記分</h3>
+        <div class="group"><h3 data-i18n="q_sec_score">🎾 記分</h3>
           <div class="grid">
-            <button class="counter tone-green" onclick="qTap('ptWon')"><span class="emo">🎾</span>得分<span class="cnt" id="qc-ptWon">0</span></button>
-            <button class="counter tone-clay" onclick="qTap('ptLost')"><span class="emo">⚠️</span>失分<span class="cnt" id="qc-ptLost">0</span></button>
-            <button class="counter tone-green" onclick="qTap('aces')"><span class="emo">💥</span>Ace<span class="cnt" id="qc-aces">0</span></button>
-            <button class="counter tone-green" onclick="qTap('winner')"><span class="emo">🔥</span>致勝球<span class="cnt" id="qc-winner">0</span></button>
-            <button class="counter tone-clay" onclick="qTap('ufe')"><span class="emo">🫠</span>非受迫失誤<span class="cnt" id="qc-ufe">0</span></button>
-            <button class="counter tone-clay" onclick="qTap('df')"><span class="emo">🚫</span>雙誤<span class="cnt" id="qc-df">0</span></button>
+            <button class="counter tone-green" onclick="qTap('ptWon')"><span class="emo">🎾</span><span data-i18n="pts">得分</span><span class="cnt" id="qc-ptWon">0</span></button>
+            <button class="counter tone-clay" onclick="qTap('ptLost')"><span class="emo">⚠️</span><span data-i18n="lost">失分</span><span class="cnt" id="qc-ptLost">0</span></button>
+            <button class="counter tone-green" onclick="qTap('aces')"><span class="emo">💥</span><span data-i18n="ace">Ace</span><span class="cnt" id="qc-aces">0</span></button>
+            <button class="counter tone-green" onclick="qTap('winner')"><span class="emo">🔥</span><span data-i18n="winner_lbl">致勝球</span><span class="cnt" id="qc-winner">0</span></button>
+            <button class="counter tone-clay" onclick="qTap('ufe')"><span class="emo">🫠</span><span data-i18n="ufe">非受迫失誤</span><span class="cnt" id="qc-ufe">0</span></button>
+            <button class="counter tone-clay" onclick="qTap('df')"><span class="emo">🚫</span><span data-i18n="df">雙誤</span><span class="cnt" id="qc-df">0</span></button>
           </div>
         </div>
-        <div class="group"><h3>🎯 發球</h3>
+        <div class="group"><h3 data-i18n="q_sec_serve">🎯 發球</h3>
           <div class="grid">
-            <button class="counter tone-green" onclick="qTap('firstOK')"><span class="emo">✅</span>一發成功<span class="cnt" id="qc-firstOK">0</span></button>
-            <button class="counter tone-clay" onclick="qTap('firstFault')"><span class="emo">❌</span>一發失誤<span class="cnt" id="qc-firstFault">0</span></button>
+            <button class="counter tone-green" onclick="qTap('firstOK')"><span class="emo">✅</span><span data-i18n="first_ok">一發成功</span><span class="cnt" id="qc-firstOK">0</span></button>
+            <button class="counter tone-clay" onclick="qTap('firstFault')"><span class="emo">❌</span><span data-i18n="first_fault">一發失誤</span><span class="cnt" id="qc-firstFault">0</span></button>
           </div>
         </div>
         <div class="group"><h3><span data-i18n="spin_title">🌀 旋球得失分</span></h3>
@@ -659,7 +659,7 @@
         </div>
         <div class="group">
           <div class="live-actions">
-            <button class="btn btn-clay" onclick="qUndo()">↩︎ 撤銷</button>
+            <button class="btn btn-clay" onclick="qUndo()"><span data-i18n="undo_lbl">↩︎ 撤銷</span></button>
             <button class="btn btn-primary" onclick="qEnd()" data-i18n="finish_report">完場，出報告 ✓</button>
           </div>
         </div>
@@ -669,8 +669,8 @@
         <div class="group">
           <h3><span data-i18n="opp_call">🚨 對手亂Call</span></h3>
           <div class="grid">
-            <button class="counter tone-clay" onclick="oppCall('out')"><span class="emo">📢</span data-i18n="op_out">亂Call「Out」<span class="cnt" id="opBadOutC">0</span></button>
-            <button class="counter tone-clay" onclick="oppCall('score')"><span class="emo">🔢</span data-i18n="op_score">亂Call「分數」<span class="cnt" id="opBadScoreC">0</span></button>
+            <button class="counter tone-clay" onclick="oppCall('out')"><span class="emo">📢</span><span data-i18n="op_out">亂Call「Out」</span><span class="cnt" id="opBadOutC">0</span></button>
+            <button class="counter tone-clay" onclick="oppCall('score')"><span class="emo">🔢</span><span data-i18n="op_score">亂Call「分數」</span><span class="cnt" id="opBadScoreC">0</span></button>
           </div>
         </div>
       </div>
@@ -725,6 +725,14 @@
     "use strict";
     const STORE_KEY = "tennisboy:data:v1";
     let data = load();
+    const tr = (zh, en) => (data.lang === "en" ? en : zh);
+    const kv = (label, value) => label + (data.lang === "en" ? ": " : "：") + value;
+    const dateLoc = () => (data.lang === "en" ? "en-GB" : "zh-Hant-HK");
+    const MET = {
+      pt:["得分率","Point rate"], first:["一發入框率","1st-serve in"], df:["雙誤率","Double-fault rate"],
+      spin:["旋球成功率","Spin success rate"], hold:["保住發球局","Hold serve"], brk:["破發成功率","Break conversion"], brkPt:["破發點轉化","Break points won"]
+    };
+    const ml = k => tr(MET[k][0], MET[k][1]);
     let selectedAnalysis = null;
     let selectedReport = null;
     let liveMode = "full"; // 'full' | 'quick'
@@ -756,6 +764,8 @@
       cn6:     { bestOf:1, ad:false, games:6, finalTB:7, tbWinBy:1, tbAt:6 }
     };
     const fmtName = { bo3ad:"3盤2勝 · 全Ad (正式) · 搶七", bo3noad:"3盤2勝 · No Ad · 搶七", bo3tb10:"3盤2勝 · 全Ad · 搶七", bo5ad:"5盤3勝 · 全Ad (正式) · 搶七", bo5noad:"5盤3勝 · No Ad · 搶七", cn4:"國內制 · 一盤4局 · No Ad · 搶7一分決勝", cn6:"國內制 · 一盤6局 · No Ad · 搶7一分決勝", custom:"自訂" };
+    const fmtNameEn = { bo3ad:"Best of 3 · Full Ad (official) · Tiebreak 7", bo3noad:"Best of 3 · No-Ad · Tiebreak 7", bo3tb10:"Best of 3 · Full Ad · Tiebreak 7", bo5ad:"Best of 5 · Full Ad (official) · Tiebreak 7", bo5noad:"Best of 5 · No-Ad · Tiebreak 7", cn4:"Domestic · 4 games/set · No-Ad · Tiebreak 7 (sudden death)", cn6:"Domestic · 6 games/set · No-Ad · Tiebreak 7 (sudden death)", custom:"Custom" };
+    const fmtLabel = (key) => data.lang === "en" ? (fmtNameEn[key] || fmtName[key] || "") : (fmtName[key] || "");
 
     function load() {
       try { const p = JSON.parse(localStorage.getItem(STORE_KEY) || "null"); if (!p) return defaults(); return Object.assign(defaults(), p); }
@@ -825,9 +835,9 @@
     function toLocalInput(d) { const p = n=>String(n).padStart(2,"0"); return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`; }
     function renderCountdown() {
       const ring = $("#countRing"), num = $("#countNum"), label = $("#countLabel");
-      if (!data.nextMatch) { ring.style.setProperty("--pct", 0); num.textContent = "–"; label.textContent = "未設定"; return; }
+      if (!data.nextMatch) { ring.style.setProperty("--pct", 0); num.textContent = "–"; label.textContent = tr("未設定","Not set"); return; }
       const diff = data.nextMatch - Date.now();
-      if (diff <= 0) { ring.style.setProperty("--pct",100); num.textContent = "🎉"; label.textContent = "係時候啦！"; return; }
+      if (diff <= 0) { ring.style.setProperty("--pct",100); num.textContent = "🎉"; label.textContent = tr("係時候啦！","It's time!"); return; }
       const pct = Math.min(100, Math.max(2, 100 - (diff / (7*24*3600*1000)) * 100));
       ring.style.setProperty("--pct", Math.round(pct));
       const d = Math.floor(diff/86400000), h = Math.floor((diff%86400000)/3600000), m = Math.floor((diff%3600000)/60000);
@@ -837,11 +847,11 @@
     }
     function renderRecent() {
       const list = $("#recentList"), ms = data.matches.slice().sort((a,b)=>b.ts-a.ts);
-      if (!ms.length) { list.innerHTML = `<p class="muted" style="margin:4px 0 0">未有記錄。去「記錄」開一場啦。</p>`; return; }
+      if (!ms.length) { list.innerHTML = `<p class="muted" style="margin:4px 0 0">${tr("未有記錄。去「記錄」開一場啦。","No matches yet. Go to Record to start one.")}</p>`; return; }
       list.innerHTML = ms.slice(0,5).map(m => {
         const line = m.quick ? `${m.st.ptWon}–${m.st.ptLost}` : scoreLine(m);
         return `<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)">
-          <div><div style="font-weight:800">${esc(m.event)||"未命名賽事"}</div><div class="muted" style="font-size:0.82rem">${m.stage?esc(m.stage)+" · ":""}${esc(m.opp)||"對手未填"} · ${fmtDate(m.ts)}${m.winner ? (m.winner==="me"?" · 勝":" · 負") : ""}</div></div>
+          <div><div style="font-weight:800">${esc(m.event)||tr("未命名賽事","Untitled event")}</div><div class="muted" style="font-size:0.82rem">${m.stage?esc(m.stage)+" · ":""}${esc(m.opp)||tr("對手未填","Opponent not set")} · ${fmtDate(m.ts)}${m.winner ? (m.winner==="me"?tr(" · 勝"," · W"):tr(" · 負"," · L")) : ""}</div></div>
           <div><span class="pill">${esc(line)}</span></div>
         </div>`;
       }).join("");
@@ -849,7 +859,7 @@
     function saveQuickSettings() {
       const name = $("#playerName").value.trim(), age = $("#playerAge").value.trim(), note = $("#nextNote").value.trim(), iv = $("#nextMatch").value;
       data.player = name; data.playerAge = age; data.nextNote = note; data.nextMatch = iv ? new Date(iv).getTime() : null;
-      save(); renderHome(); toast("已儲存 ✓");
+      save(); renderHome(); toast(tr("已儲存 ✓","Saved ✓"));
     }
 
     /* ---------- Record setup ---------- */
@@ -927,7 +937,7 @@
 
     function beginMatch() {
       const event = $("#eventName").value.trim();
-      const opp = $("#oppName").value.trim() || "本場";
+      const opp = $("#oppName").value.trim() || tr("本場","this match");
       const stage = $("#stageName").value.trim();
       const division = $("#divisionName").value.trim();
       const oppHand = oppHandVal;
@@ -955,8 +965,8 @@
         seg: [], serve: null, log: [], winner: null, _bp: false, _snapReady: true
       };
       data.live = L; save();
-      if (L.quick) { showQuick(true); toast(`開始（快速計數）：${opp}`); }
-      else { showFull(true); toast(`開始：${opp} · ${fmtName[L.fmtKey]}`); }
+      if (L.quick) { showQuick(true); toast(tr(`開始（快速計數）：${opp}`, `Started (quick): ${opp}`)); }
+      else { showFull(true); toast(tr(`開始：${opp} · ${fmtLabel(L.fmtKey)}`, `Started: ${opp} · ${fmtLabel(L.fmtKey)}`)); }
       vibrate(35);
     }
 
@@ -1098,18 +1108,18 @@
 
     function undoAction() {
       const L = data.live; if (!L) return;
-      if (!L.log.length) return toast("啱啱冇分可以撤銷");
+      if (!L.log.length) return toast(tr("啱啱冇分可以撤銷","No point to undo yet"));
       restoreState(L.log.pop());
       L._choose = false;
       L._ochoose = false;
       L._snapReady = false;
       vibrate(15);
       renderLive();
-      toast("已撤銷一分");
+      toast(tr("已撤銷一分","Point undone"));
     }
     function confirmEnd() {
       const L = data.live; if (!L) return;
-      if (confirm("提前完場？會保留而家嘅紀錄。")) commitMatch();
+      if (confirm(tr("提前完場？會保留而家嘅紀錄。","End the match early? Your record so far is kept."))) commitMatch();
     }
 
     function commitMatch() {
@@ -1124,7 +1134,7 @@
       data.matches.push(match); data.live = null; save(); pushMatch(match);
       selectedReport = match.id;
       showView("report");
-      toast("已加到記錄 ✓"); vibrate(45);
+      toast(tr("已加到記錄 ✓","Saved to records ✓")); vibrate(45);
     }
 
     /* ---------- Mood ---------- */
@@ -1134,9 +1144,9 @@
       const elapsed = Math.round((Date.now() - L.ts) / 60000 * 10) / 10;
       L.seg.push({ m: elapsed, mood });
       save(); vibrate(15);
-      toast(`記低：${moodLabel(mood)}`);
+      toast(tr(`記低：${moodLabel(mood)}`, `Noted: ${moodLabel(mood)}`));
     }));
-    function moodLabel(m) { return { excited:"亢奮", calm:"平靜", nervous:"緊張", down:"沮喪" }[m] || m; }
+    function moodLabel(m) { return tr(({excited:"亢奮",calm:"平靜",nervous:"緊張",down:"沮喪"})[m] || m, ({excited:"Fired up",calm:"Calm",nervous:"Nervous",down:"Down"})[m] || m); }
 
     /* ---------- Live render (full) ---------- */
     function ptLabel(side, a, b) {
@@ -1155,12 +1165,12 @@
       const maxSets = setsToWin(L);
 
       const evtStage = [L.event, L.stage].filter(Boolean).join(" · ");
-      $("#fmtLabel").textContent = evtStage || fmtName[L.fmtKey] || L.opp;
-      const ow = document.getElementById("oppWho"); if (ow) ow.textContent = L.opp || "對手";
+      $("#fmtLabel").textContent = evtStage || fmtLabel(L.fmtKey) || L.opp;
+      const ow = document.getElementById("oppWho"); if (ow) ow.textContent = L.opp || t("l_opp");
       $("#myGames").textContent = L.cur.a;
       $("#oppGames").textContent = L.cur.b;
       const singleSet = maxSets === 1;
-      $("#setNo").textContent = singleSet ? t("single_set") : `第 ${L.sets.length+1} 盤`;
+      $("#setNo").textContent = singleSet ? t("single_set") : tr(`第 ${L.sets.length+1} 盤`, `Set ${L.sets.length+1}`);
       $("#vsLbl").textContent = singleSet ? "VS" : `${meWinSets} : ${oppWinSets}`;
 
       $("#myDots").innerHTML = singleSet ? "" : dots(meWinSets, maxSets, "me");
@@ -1174,24 +1184,24 @@
       ptsElOpp.classList.toggle("small", inTB);
       ptsElMy.textContent = inTB ? (L.tb.a) : L.pt.a===0&&L.pt.b===0 ? "0" : myPt;
       ptsElOpp.textContent = inTB ? (L.tb.b) : L.pt.a===0&&L.pt.b===0 ? "0" : oppPt;
-      $("#tbLbl").textContent = inTB ? `TB ${L.tb.a}–${L.tb.b}（${tbTarget(L)}分）` : "";
+      $("#tbLbl").textContent = inTB ? tr(`TB ${L.tb.a}–${L.tb.b}（${tbTarget(L)}分）`, `TB ${L.tb.a}–${L.tb.b} (to ${tbTarget(L)})`) : "";
 
       // serve pill
       const pill = $("#servePill");
-      if (inTB) { pill.textContent = (L.server === "me" ? "我發球" : "對手發球") + " · Tie-break"; pill.classList.toggle("court", L.server !== "me"); }
-      else { pill.textContent = L.server === "me" ? "我發球" : "我接發"; pill.classList.toggle("court", L.server !== "me"); }
+      if (inTB) { pill.textContent = (L.server === "me" ? t("serve_pill_i") : tr("對手發球","Opp serve")) + " · Tie-break"; pill.classList.toggle("court", L.server !== "me"); }
+      else { pill.textContent = L.server === "me" ? t("serve_pill_i") : t("serve_pill_r"); pill.classList.toggle("court", L.server !== "me"); }
 
       // key badge
       const badge = $("#keyBadge");
       let keyTxt = "", cls = "info";
       if (inTB) {
-        if (L.tb.a >= tbTarget(L)-1 || L.tb.b >= tbTarget(L)-1) { keyTxt = "⚡ 搶七關鍵分！"; cls = "hot"; }
+        if (L.tb.a >= tbTarget(L)-1 || L.tb.b >= tbTarget(L)-1) { keyTxt = tr("⚡ 搶七關鍵分！","⚡ Big tiebreak point!"); cls = "hot"; }
       } else {
-        if (isMeBreakPoint(L)) { keyTxt = "⚡ 破發點！贏呢分就破發"; cls = "hot"; }
-        else if (isMeGamePoint(L)) { keyTxt = "🔑 局點——我發球，贏呢分攞局"; cls = "hot"; }
-        else if (isOppGamePoint(L)) { keyTxt = "🛡️ 對手局點——要頂住"; cls = "warn"; }
-        if (meHasGamePoint(L) && gameWinsSet(L,"me") && meWinSets === setsToWin(L)-1) keyTxt = "🏆 賽點！" + keyTxt;
-        else if (oppHasGamePoint(L) && gameWinsSet(L,"opp") && oppWinSets === setsToWin(L)-1) keyTxt = "🛡️ 對手賽點！" + keyTxt;
+        if (isMeBreakPoint(L)) { keyTxt = tr("⚡ 破發點！贏呢分就破發","⚡ Break point! Win this to break"); cls = "hot"; }
+        else if (isMeGamePoint(L)) { keyTxt = tr("🔑 局點——我發球，贏呢分攞局","🔑 Game point — win this to take the game"); cls = "hot"; }
+        else if (isOppGamePoint(L)) { keyTxt = tr("🛡️ 對手局點——要頂住","🛡️ Opponent game point — hold on"); cls = "warn"; }
+        if (meHasGamePoint(L) && gameWinsSet(L,"me") && meWinSets === setsToWin(L)-1) keyTxt = tr("🏆 賽點！","🏆 Match point! ") + keyTxt;
+        else if (oppHasGamePoint(L) && gameWinsSet(L,"opp") && oppWinSets === setsToWin(L)-1) keyTxt = tr("🛡️ 對手賽點！","🛡️ Opponent match point! ") + keyTxt;
       }
       if (keyTxt) { badge.textContent = keyTxt; badge.style.display = "block"; badge.className = "badge " + cls; }
       else { badge.style.display = "none"; }
@@ -1206,10 +1216,10 @@
         if (L.server === "me") html = serveBtnHTML();
         else html = returnBtnHTML();
       } else if (L.server === "me") {
-        title.textContent = "🎾 我發球 · 記呢分";
+        title.textContent = "🎾 " + t("serve_pill_i") + " · " + t("record_pt");
         html = serveBtnHTML();
       } else {
-        title.textContent = "🎾 我接發 · 記呢分";
+        title.textContent = "🎾 " + t("serve_pill_r") + " · " + t("record_pt");
         html = oppServeBtnHTML();
       }
       btns.innerHTML = html;
@@ -1228,8 +1238,8 @@
                 <button class="counter tone-clay" onclick="actServe('df')"><span class="emo">🚫</span>${t("serve_df")}<span class="cnt">${t("serve_lose")}</span></button>`;
       }
       if (phase === "rally") {
-        return `<button class="big-pick pick-win" onclick="actServe('winRally')">🎾 我贏呢分<span class="sub">相持後攞分</span></button>
-                <button class="big-pick pick-lose" onclick="actServe('loseRally')">⚠️ ${t("serve_lose")}<span class="sub">${t("serve_lose")}</span></button>`;
+        return `<button class="big-pick pick-win" onclick="actServe('winRally')">🎾 ${t("serve_win")}<span class="sub">${tr("相持後攞分","Won the rally")}</span></button>
+                <button class="big-pick pick-lose" onclick="actServe('loseRally')">⚠️ ${t("serve_lose")}<span class="sub">${tr("相持後失分","Lost the rally")}</span></button>`;
       }
       if (L._choose) {
         return `<button class="counter tone-clay" onclick="actServe('w1fault')"><span class="emo">❌</span>${t("fault_1st")}<span class="cnt">${t("fault_to2nd")}</span></button>
@@ -1295,7 +1305,7 @@
     }
     function qUndo() {
       const L = data.live; if (!L || !L.quick) return;
-      const k = L.st.__qlog.pop(); if (!k) return toast("冇嘢可以撤銷");
+      const k = L.st.__qlog.pop(); if (!k) return toast(tr("冇嘢可以撤銷","Nothing to undo"));
       const s = L.st;
       if (k.indexOf("spin:") === 0) {
         const out = k.slice(5);
@@ -1306,18 +1316,18 @@
       } else {
         s[k] = Math.max(0, s[k]-1);
       }
-      save(); updateQuickHUD(); toast("已撤銷");
+      save(); updateQuickHUD(); toast(tr("已撤銷","Undone"));
     }
     function qEnd() {
       const L = data.live; if (!L) return;
-      if (!confirm("確定完場？會將今場數據加入記錄。")) return;
+      if (!confirm(tr("確定完場？會將今場數據加入記錄。","Finish the match? This match will be saved."))) return;
       const match = { id:"m"+Date.now(), ts:L.ts, event:L.event, opp:L.opp, stage:L.stage, division:L.division, oppHand:L.oppHand, oppBadOut:L.oppBadOut, oppBadScore:L.oppBadScore, playerAge:data.playerAge, quick:true, fmt:null, fmtKey:null, score:[], winner:null, st:{...L.st}, m:null, seg:L.seg.map(x=>({...x})) };
-      data.matches.push(match); data.live = null; save(); pushMatch(match); selectedReport = match.id; showView("report"); toast("已加到記錄 ✓"); vibrate(45);
+      data.matches.push(match); data.live = null; save(); pushMatch(match); selectedReport = match.id; showView("report"); toast(tr("已加到記錄 ✓","Saved to records ✓")); vibrate(45);
     }
     function updateQuickHUD() {
       const L = data.live; if (!L || !L.quick) return;
       const s = L.st;
-      $("#qLiveOpp").textContent = `今場：${[L.event, L.opp, L.stage].filter(Boolean).join(" · ") || "(未命名)"}`;
+      $("#qLiveOpp").textContent = tr(`今場：${[L.event, L.opp, L.stage].filter(Boolean).join(" · ") || "(未命名)"}`, `This match: ${[L.event, L.opp, L.stage].filter(Boolean).join(" · ") || "(untitled)"}`);
       $("#qWon").textContent = s.ptWon; $("#qLost").textContent = s.ptLost;
       const map = {ptWon:"qc-ptWon", ptLost:"qc-ptLost", aces:"qc-aces", winner:"qc-winner", ufe:"qc-ufe", df:"qc-df", firstOK:"qc-firstOK", firstFault:"qc-firstFault"};
       Object.keys(map).forEach(k => { const el = $("#" + map[k]); if (el) el.textContent = s[k]; });
@@ -1375,30 +1385,33 @@
       if (idx < m.g.length) out.push({ setNo: (m.score||[]).length + 1, set: null, games: m.g.slice(idx) });
       return out;
     }
-    function setResultLabel(s) { return s.winner === "me" ? "你贏" : "對手贏"; }
+    function setResultLabel(s) { return s.winner === "me" ? tr("你贏","you won") : tr("對手贏","opponent won"); }
     function tennisScore(n) { return n <= 0 ? "0" : n === 1 ? "15" : n === 2 ? "30" : "40"; }
     function gameLine(gm, j) {
       const win = gm.winner === "me";
-      const winner = win ? "你" : "對手", loser = win ? "對手" : "你";
+      const winner = win ? tr("你","You") : tr("對手","Opponent"), loser = win ? tr("對手","Opponent") : tr("你","You");
       const a = gm.pts ? gm.pts.a : null, b = gm.pts ? gm.pts.b : null;
       if (gm.tb) {
         const sc = a == null ? "" : `${winner} ${win ? a+"–"+b : b+"–"+a}`;
-        return { label: "搶七比分：", body: sc, deuce: false };
+        return { label: tr("搶七比分：","Tiebreak: "), body: sc, deuce: false };
       }
-      const label = `第 ${j+1} 局比分：`;
-      if (a == null) return { label, body: `${winner}贏`, deuce: false };
+      const label = tr(`第 ${j+1} 局比分：`, `Game ${j+1}: `);
+      if (a == null) return { label, body: tr(`${winner}贏`, `${winner} won`), deuce: false };
       const loserPts = win ? b : a;
-      let body = `${winner}贏，${loser}${tennisScore(loserPts)}分`;
-      if (gm.deuces) body += `，今局有${gm.deuces}個Deuce`;
+      let body = data.lang === "en" ? `${winner} won, ${String(loser).toLowerCase()} ${tennisScore(loserPts)}` : `${winner}贏，${loser}${tennisScore(loserPts)}分`;
+      if (gm.deuces) body += data.lang === "en" ? `, ${gm.deuces} deuce${gm.deuces > 1 ? "s" : ""}` : `，今局有${gm.deuces}個Deuce`;
       return { label, body, deuce: !!gm.deuces };
+    }
+    function setHeadText(g) {
+      return g.set
+        ? tr(`第 ${g.setNo} 盤完 · ${setResultLabel(g.set)} (${g.set.a}–${g.set.b})`, `Set ${g.setNo} finished · ${setResultLabel(g.set)} (${g.set.a}–${g.set.b})`)
+        : tr(`第 ${g.setNo} 盤（未完場）`, `Set ${g.setNo} (unfinished)`);
     }
     function scoreDetailHTML(m) {
       const groups = gamesBySet(m);
       if (!groups.length) return "";
       return groups.map(g => {
-        const setHead = g.set
-          ? `第 ${g.setNo} 盤完 · ${setResultLabel(g.set)} (${g.set.a}–${g.set.b})`
-          : `第 ${g.setNo} 盤（未完場）`;
+        const setHead = setHeadText(g);
         const gamesHTML = g.games.map((gm, j) => {
           const ln = gameLine(gm, j);
           return `<div class="r-game${ln.deuce ? " has-deuce" : ""}"><span class="gn">${ln.label}</span><b>${ln.body}</b></div>`;
@@ -1411,9 +1424,7 @@
       if (!groups.length) return [];
       const lines = [];
       groups.forEach(g => {
-        lines.push(g.set
-          ? `第 ${g.setNo} 盤完 · ${setResultLabel(g.set)} (${g.set.a}–${g.set.b})`
-          : `第 ${g.setNo} 盤（未完場）`);
+        lines.push(setHeadText(g));
         g.games.forEach((gm, j) => { const ln = gameLine(gm, j); lines.push("  " + ln.label + ln.body); });
       });
       return lines;
@@ -1434,12 +1445,13 @@
         brkConv: null
       };
     }
-    function oppHandLabel(h) { return h === "left" ? "左手" : h === "right" ? "右手" : "—"; }
+    function oppHandLabel(h) { return h === "left" ? tr("左手","Left") : h === "right" ? tr("右手","Right") : "—"; }
     function oppMetaHTML(m) {
+      const c = tr("：",": ");
       return `<div class="opp-meta">
-        <span class="pill">${t("row_hand2")}：${oppHandLabel(m.oppHand)}</span>
-        <span class="pill">${t("row_out")}：${m.oppBadOut||0}</span>
-        <span class="pill">${t("row_sc")}：${m.oppBadScore||0}</span>
+        <span class="pill">${t("row_hand2")}${c}${oppHandLabel(m.oppHand)}</span>
+        <span class="pill">${t("row_out")}${c}${m.oppBadOut||0}</span>
+        <span class="pill">${t("row_sc")}${c}${m.oppBadScore||0}</span>
       </div>`;
     }
     function setViewMode(mode) { viewMode = mode; if (currentView === "analysis") renderAnalysis(); else if (currentView === "report") renderReport(); }
@@ -1465,9 +1477,9 @@
       const html = rows.map(([n,a,b]) => {
         const ap = a==null?"–":Math.round(a*100)+"%", bp = b==null?"–":Math.round(b*100)+"%";
         const aP = a==null?0:Math.round(a*100), bP = b==null?0:Math.round(b*100);
-        return `<div class="metric"><div class="head"><span class="name">${n}</span><span class="tag good">我 ${ap} / 對 ${bp}</span></div>
+        return `<div class="metric"><div class="head"><span class="name">${n}</span><span class="tag good">${tr("我","Me")} ${ap} / ${tr("對","vs")} ${bp}</span></div>
           <div class="cmpbar"><div class="cmpbar-fill" style="width:${Math.min(100,aP)}%"></div>${b==null?"":`<span class="cmp-marker" style="left:${Math.min(100,bP)}%"></span>`}</div>
-          <div class="cmp-labels"><span>我</span><span>對手</span></div>
+          <div class="cmp-labels"><span>${tr("我","Me")}</span><span>${tr("對手","Opp")}</span></div>
         </div>`;
       }).join("");
       return `<div class="card"><h3 style="margin-top:0">${t("me_vs_opp")}</h3>${html}${oppMetaHTML(m)}</div>`;
@@ -1478,12 +1490,12 @@
       const picker = $("#analysisPicker"), body = $("#analysisBody");
       const ms = data.matches.slice().sort((a,b)=>b.ts-a.ts);
       if (!ms.length) {
-        picker.innerHTML = `<p class="muted">未有比賽數據。</p>`;
-        body.innerHTML = `<div class="empty"><div class="ic">📊</div>打一場比賽之後，呢度會對比歷史平均。<br><button class="btn btn-primary btn-block" style="margin-top:16px;max-width:260px" onclick="startSetup()">去記錄</button></div>`;
+        picker.innerHTML = `<p class="muted">${tr("未有比賽數據。","No match data yet.")}</p>`;
+        body.innerHTML = `<div class="empty"><div class="ic">📊</div>${tr("打一場比賽之後，呢度會對比歷史平均。","After a match, this compares it with your average.")}<br><button class="btn btn-primary btn-block" style="margin-top:16px;max-width:260px" onclick="startSetup()">${tr("去記錄","Go to Record")}</button></div>`;
         return;
       }
       if (!selectedAnalysis || !ms.find(m=>m.id===selectedAnalysis)) selectedAnalysis = ms[0].id;
-      const opts = ms.map(m => `<option value="${m.id}" ${m.id===selectedAnalysis?"selected":""}>${esc(m.event||m.opp||"未命名")}${m.stage?" · "+esc(m.stage):""} · ${fmtDate(m.ts)}${m.winner?" · "+(m.winner==="me"?"勝":"負"):""}</option>`).join("");
+      const opts = ms.map(m => `<option value="${m.id}" ${m.id===selectedAnalysis?"selected":""}>${esc(m.event||m.opp||tr("未命名","Untitled"))}${m.stage?" · "+esc(m.stage):""} · ${fmtDate(m.ts)}${m.winner?" · "+(m.winner==="me"?tr("勝","W"):tr("負","L")):""}</option>`).join("");
       picker.innerHTML = `<select onchange="selectedAnalysis=this.value;renderAnalysis()">${opts}</select>`;
       const m = ms.find(x=>x.id===selectedAnalysis);
       const others = ms.filter(x=>x.id!==m.id);
@@ -1498,11 +1510,11 @@
       if (viewMode === "opp") return oppView(m);
       if (viewMode === "cmp") return compareView(m);
       if (m.quick) {
-        return `<div class="card"><div class="result-banner win">⚡ 快速計數</div><p class="muted" style="text-align:center">呢場用快速模式記錄，所以只計累積數，冇局數/盤數結構。</p>
-          <div class="legend" style="justify-content:center;margin-top:8px"><span>今場</span><span class="g-avg">歷史平均</span></div>
-          ${metricBlock("得分率", r.pointRate, avg.pointRate, true, "high")}
-          ${metricBlock("一發成功率", r.serveInPct, avg.serveInPct, true, "high")}
-          ${metricBlock("雙誤率", r.dfRate, avg.dfRate, true, "low")}
+        return `<div class="card"><div class="result-banner win">⚡ ${tr("快速計數","Quick count")}</div><p class="muted" style="text-align:center">${tr("呢場用快速模式記錄，所以只計累積數，冇局數/盤數結構。","This match used quick mode, so it only has totals — no games/sets.")}</p>
+          <div class="legend" style="justify-content:center;margin-top:8px"><span>${tr("今場","This match")}</span><span class="g-avg">${tr("歷史平均","Average")}</span></div>
+          ${metricBlock(t("stat_pt"), r.pointRate, avg.pointRate, true, "high")}
+          ${metricBlock(t("stat_first"), r.serveInPct, avg.serveInPct, true, "high")}
+          ${metricBlock(t("stat_df"), r.dfRate, avg.dfRate, true, "low")}
           ${metricBlock(t("stat_spin"), r.spinRate, avg.spinRate, true, "high")}
         </div>`;
       }
@@ -1517,7 +1529,7 @@
       return `<div class="card">
         <div class="result-banner ${cls}">${lbl}</div>
         <div class="scoreline" style="text-align:center">${esc(line)}</div>
-        <div class="muted" style="text-align:center;font-size:0.8rem;margin-top:6px">${esc(m.event||"—")}${m.stage?" · "+esc(m.stage):""} · ${esc(m.opp||"對手未填")} · ${new Date(m.ts).toLocaleDateString("zh-Hant-HK")} · ${fmtName[m.fmtKey]||""}</div>
+        <div class="muted" style="text-align:center;font-size:0.8rem;margin-top:6px">${esc(m.event||"—")}${m.stage?" · "+esc(m.stage):""} · ${esc(m.opp||tr("對手未填","Opponent not set"))} · ${new Date(m.ts).toLocaleDateString(dateLoc())} · ${fmtLabel(m.fmtKey)}</div>
       </div>`;
     }
 
@@ -1549,67 +1561,67 @@
       const curP = cur!=null ? Math.round(cur*(pct?100:1)) : 0;
       const avgP = avg!=null ? Math.round(avg*(pct?100:1)) : 0;
       const fmt = v => v!=null ? (pct ? Math.round(v*100)+"%" : v.toFixed(2)) : "–";
-      let tag = "— 未有數據", cls = "null";
+      let tag = tr("— 未有數據","— no data"), cls = "null";
       if (cur!=null && avg!=null) {
         const diff = (cur-avg)*(better==="high"?1:-1);
-        if (diff > 0.03) { tag = "▲ 高於平均"; cls = "good"; }
-        else if (diff < -0.03) { tag = "▼ 低於平均"; cls = "warn"; }
-        else { tag = "≈ 貼近平均"; cls = "good"; }
-      } else if (cur!=null && avg==null) { tag = "首場紀錄"; cls = "good"; }
+        if (diff > 0.03) { tag = tr("▲ 高於平均","▲ Above average"); cls = "good"; }
+        else if (diff < -0.03) { tag = tr("▼ 低於平均","▼ Below average"); cls = "warn"; }
+        else { tag = tr("≈ 貼近平均","≈ Near average"); cls = "good"; }
+      } else if (cur!=null && avg==null) { tag = tr("首場紀錄","First match"); cls = "good"; }
       return `<div class="metric"><div class="head"><span class="name">${name}</span><span class="tag ${cls}">${tag}</span></div>
         <div class="bars">
-          <div class="bar-col mine"><div class="bar-track"><div class="bar" style="width:${Math.min(100,curP)}%"></div></div><div class="bar-label"><span>今場</span><b>${fmt(cur)}</b></div></div>
-          <div class="bar-col avg"><div class="bar-track"><div class="bar" style="width:${Math.min(100,avgP)}%"></div></div><div class="bar-label"><span>平均</span><b>${fmt(avg)}</b></div></div>
+          <div class="bar-col mine"><div class="bar-track"><div class="bar" style="width:${Math.min(100,curP)}%"></div></div><div class="bar-label"><span>${tr("今場","This match")}</span><b>${fmt(cur)}</b></div></div>
+          <div class="bar-col avg"><div class="bar-track"><div class="bar" style="width:${Math.min(100,avgP)}%"></div></div><div class="bar-label"><span>${tr("平均","Average")}</span><b>${fmt(avg)}</b></div></div>
         </div></div>`;
     }
 
     function coachBlock(m, r, avg) {
       const pts = [];
-      if (r.dfRate != null && r.dfRate > 0.12) pts.push("雙誤率偏高 — 發球放慢節奏，先穩住拋球再出手。");
-      else if (r.dfRate != null && r.dfRate > 0.06) pts.push("雙誤有少少多，試吓「持球兩秒再發」。");
-      if (r.spinRate != null && r.spinRate < 0.5) pts.push("旋球成功率偏低 — 多用擊球前嘅手腕，穩定轉速先至加力。");
-      if (r.spinRate != null && r.spinRate >= 0.7) pts.push("旋球成功率高，識得用轉速控制節奏同落點。");
-      if (r.serveInPct != null && r.serveInPct < 0.55) pts.push("一發入框率偏低 — 降低力度換取穩定性，先入區再慢慢加力。");
-      if (r.serveInPct != null && r.serveInPct >= 0.72) pts.push("一發入框率好高，係你嘅武器。");
-      if (r.holdPct != null && r.holdPct < 0.5) pts.push("保住發球局偏低 — 發球係你而家最值得練嘅一環。");
-      if (r.holdPct != null && r.holdPct >= 0.7) pts.push("發球局保得穩，保持呢個節奏。");
-      if (r.breakPct != null && r.breakPct < 0.3) pts.push("破發機會把握唔夠 — 接發時多啲主動變線。");
-      if (r.pointRate != null && r.pointRate >= 0.55) pts.push("得分率唔錯，睇得出你揸住主動。");
-      if (r.pointRate != null && r.pointRate < 0.4) pts.push("今場失分較多 — 多打安全球、減少冒險。");
-      if (m.st.aces > 2) pts.push(`今日有 ${m.st.aces} 個 Ace — 發球係你最大武器。`);
-      if (hasNervousStart(m.seg)) pts.push("開局有緊張訊號 — 下次開波前慢跑兩分鐘、做五下深蹲。");
-      if (!pts.length) pts.push("整體表現平均 — 繼續累積數據，之後就睇到真正進步趨勢。");
+      if (r.dfRate != null && r.dfRate > 0.12) pts.push(tr("雙誤率偏高 — 發球放慢節奏，先穩住拋球再出手。","Double faults were high — slow the serve and steady the toss."));
+      else if (r.dfRate != null && r.dfRate > 0.06) pts.push(tr("雙誤有少少多，試吓「持球兩秒再發」。","A few too many double faults — try pausing two seconds before serving."));
+      if (r.spinRate != null && r.spinRate < 0.5) pts.push(tr("旋球成功率偏低 — 多用擊球前嘅手腕，穩定轉速先至加力。","Spin success was low — use more wrist and build spin before power."));
+      if (r.spinRate != null && r.spinRate >= 0.7) pts.push(tr("旋球成功率高，識得用轉速控制節奏同落點。","Great spin success — you're using spin to control pace and placement."));
+      if (r.serveInPct != null && r.serveInPct < 0.55) pts.push(tr("一發入框率偏低 — 降低力度換取穩定性，先入區再慢慢加力。","First-serve in rate was low — trade power for consistency, then build up."));
+      if (r.serveInPct != null && r.serveInPct >= 0.72) pts.push(tr("一發入框率好高，係你嘅武器。","Your first-serve in rate is a real weapon."));
+      if (r.holdPct != null && r.holdPct < 0.5) pts.push(tr("保住發球局偏低 — 發球係你而家最值得練嘅一環。","Hold-serve rate was low — serving is your top thing to train."));
+      if (r.holdPct != null && r.holdPct >= 0.7) pts.push(tr("發球局保得穩，保持呢個節奏。","You held serve consistently — keep that rhythm."));
+      if (r.breakPct != null && r.breakPct < 0.3) pts.push(tr("破發機會把握唔夠 — 接發時多啲主動變線。","You missed break chances — be more proactive on return."));
+      if (r.pointRate != null && r.pointRate >= 0.55) pts.push(tr("得分率唔錯，睇得出你揸住主動。","Solid point rate — you were dictating play."));
+      if (r.pointRate != null && r.pointRate < 0.4) pts.push(tr("今場失分較多 — 多打安全球、減少冒險。","You lost more points today — play safer and take fewer risks."));
+      if (m.st.aces > 2) pts.push(tr(`今日有 ${m.st.aces} 個 Ace — 發球係你最大武器。`, `${m.st.aces} aces today — your serve is your biggest weapon.`));
+      if (hasNervousStart(m.seg)) pts.push(tr("開局有緊張訊號 — 下次開波前慢跑兩分鐘、做五下深蹲。","Early nerves noted — jog two minutes and do five squats before your next match."));
+      if (!pts.length) pts.push(tr("整體表現平均 — 繼續累積數據，之後就睇到真正進步趨勢。","Overall steady — keep logging to see your real trend."));
       const best = bestOf(m, r);
       return `<div class="coach">
-        <div class="who"><div class="avatar">🎾</div><div><div class="name">教練 Ray</div><div class="role">你的球場軍師 · 根據數據俾建議</div></div></div>
-        <div class="verdict">${best ? "今日最佳：" + best : bestNote(m)}</div>
+        <div class="who"><div class="avatar">🎾</div><div><div class="name">${tr("教練 Ray","Coach Ray")}</div><div class="role">${tr("你的球場軍師 · 根據數據俾建議","Your courtside strategist · advice from your data")}</div></div></div>
+        <div class="verdict">${best ? tr("今日最佳：","Best today: ") + best : bestNote(m)}</div>
         <ul>${pts.map(p=>`<li>${p}</li>`).join("")}</ul>
         <div class="seg" style="margin:12px 0 10px">
-          <button class="chip ${data.coachStyle==="west"?"":"selected"}" onclick="setCoachStyle('asia')">🇭🇰 亞洲教練</button>
-          <button class="chip ${data.coachStyle==="west"?"selected":""}" onclick="setCoachStyle('west')">🌍 外國教練</button>
+          <button class="chip ${data.coachStyle==="west"?"":"selected"}" onclick="setCoachStyle('asia')">🇭🇰 ${tr("亞洲教練","Asian coach")}</button>
+          <button class="chip ${data.coachStyle==="west"?"selected":""}" onclick="setCoachStyle('west')">🌍 ${tr("外國教練","Western coach")}</button>
         </div>
-        <button class="btn btn-primary btn-block" id="coachBtn" onclick="getCoach()">🤖 AI 教練分析</button>
-        <div id="coachLangRow" style="display:none;margin-top:10px"><button class="btn btn-ghost btn-block btn-sm" id="coachLangBtn" onclick="toggleCoachLang()">🌐 切換 English</button></div>
+        <button class="btn btn-primary btn-block" id="coachBtn" onclick="getCoach()">${t("coach_btn")}</button>
+        <div id="coachLangRow" style="display:none;margin-top:10px"><button class="btn btn-ghost btn-block btn-sm" id="coachLangBtn" onclick="toggleCoachLang()">${data.coachLang==="zh" ? "🌐 English" : tr("🌐 中文","🌐 Chinese")}</button></div>
         <div id="coachAI" style="margin-top:10px;white-space:pre-wrap;font-size:0.9rem;line-height:1.6"></div>
       </div>`;
     }
     function bestOf(m, r) {
       const cands = [];
-      if (m.st.aces > 0) cands.push([`發球 · ${m.st.aces} 記 Ace`, m.st.aces]);
-      if (r.holdPct != null && r.holdPct >= 0.6) cands.push([`保住發球局 · ${Math.round(r.holdPct*100)}%`, r.holdPct]);
-      if (r.breakPct != null && r.breakPct >= 0.5) cands.push([`破發成功率 · ${Math.round(r.breakPct*100)}%`, r.breakPct]);
-      if (r.pointRate != null && r.pointRate >= 0.5) cands.push([`得分率 · ${Math.round(r.pointRate*100)}%`, r.pointRate]);
+      if (m.st.aces > 0) cands.push([tr(`發球 · ${m.st.aces} 記 Ace`, `Serve · ${m.st.aces} aces`), m.st.aces]);
+      if (r.holdPct != null && r.holdPct >= 0.6) cands.push([tr(`保住發球局 · ${Math.round(r.holdPct*100)}%`, `Hold serve · ${Math.round(r.holdPct*100)}%`), r.holdPct]);
+      if (r.breakPct != null && r.breakPct >= 0.5) cands.push([tr(`破發成功率 · ${Math.round(r.breakPct*100)}%`, `Break conversion · ${Math.round(r.breakPct*100)}%`), r.breakPct]);
+      if (r.pointRate != null && r.pointRate >= 0.5) cands.push([tr(`得分率 · ${Math.round(r.pointRate*100)}%`, `Point rate · ${Math.round(r.pointRate*100)}%`), r.pointRate]);
       if (m.st.aces>0 || r.holdPct!=null || r.breakPct!=null) return cands.length ? cands.sort((a,b)=>b[1]-a[1])[0][0] : "";
       return "";
     }
-    function bestNote(m) { return hasNervousStart(m.seg) ? "你今日克服咗開局緊張，已經進步咗。" : "繼續累積數據，睇住自己進步。"; }
+    function bestNote(m) { return hasNervousStart(m.seg) ? tr("你今日克服咗開局緊張，已經進步咗。","You pushed through the early nerves today — real progress.") : tr("繼續累積數據，睇住自己進步。","Keep logging data to track your progress."); }
     function moodBlock(m) {
-      if (!m.seg.length) return `<div class="card"><h3 style="margin-top:0">今場情緒</h3><p class="muted" style="margin:0">未記錄情緒。下次用「記錄」頁嘅情緒掣記低。</p></div>`;
+      if (!m.seg.length) return `<div class="card"><h3 style="margin-top:0">${tr("今場情緒","Mood")}</h3><p class="muted" style="margin:0">${tr("未記錄情緒。下次用「記錄」頁嘅情緒掣記低。","No mood logged. Use the mood buttons on the Record screen next time.")}</p></div>`;
       const counts = {}; m.seg.forEach(s => counts[s.mood] = (counts[s.mood]||0)+1);
       const labels = data.lang==="en" ? { excited:"⚡Fired up", calm:"😌Calm", nervous:"😰Nervous", down:"😞Down" } : { excited:"⚡亢奮", calm:"😌平靜", nervous:"😰緊張", down:"😞沮喪" };
       const chips = Object.keys(counts).map(k => `${labels[k]||k} ×${counts[k]}`).join(" · ") || "—";
       const note = data.lang==="en" ? (hasNervousStart(m.seg) ? "Early nerves noted \u2014 coach added suggestions." : (counts.excited ? "Pumped today \u2014 watch your energy pacing." : "Calm and steady all match.")) : (hasNervousStart(m.seg) ? "今場開局有「緊張」記號，教練已加入建議。" : (counts.excited ? "今場偏向亢奮，留意體力分配。" : "整體情緒平穩。"));
-      return `<div class="card"><h3 style="margin-top:0">${data.lang==="en"?"Mood":"今場情緒"}</h3><div style="font-weight:700;color:var(--accent-deep)">${chips}</div><p class="muted" style="margin-bottom:0;margin-top:8px">${note}</p></div>`;
+      return `<div class="card"><h3 style="margin-top:0">${tr("今場情緒","Mood")}</h3><div style="font-weight:700;color:var(--accent-deep)">${chips}</div><p class="muted" style="margin-bottom:0;margin-top:8px">${note}</p></div>`;
     }
 
     /* ---------- Report ---------- */
@@ -1617,16 +1629,16 @@
       const picker = $("#reportPicker");
       const ms = data.matches.slice().sort((a,b)=>b.ts-a.ts);
       if (!ms.length) {
-        picker.innerHTML = `<p class="muted">未有比賽報告。</p>`;
+        picker.innerHTML = `<p class="muted">${tr("未有比賽報告。","No match reports yet.")}</p>`;
         $("#reportToggle").innerHTML = "";
-        $("#reportHTML").innerHTML = `<div class="muted" style="padding:12px">打一場比賽之後，呢度會自動生成可以分享嘅報告。</div>`;
-        $("#reportText").textContent = "未有比賽報告。";
+        $("#reportHTML").innerHTML = `<div class="muted" style="padding:12px">${tr("打一場比賽之後，呢度會自動生成可以分享嘅報告。","After a match, a shareable report is generated here.")}</div>`;
+        $("#reportText").textContent = tr("未有比賽報告。","No match reports yet.");
         $("#reportCard").querySelector(".btn-row").style.display = "none";
         renderNextGoal();
         return;
       }
       if (!selectedReport || !ms.find(x=>x.id===selectedReport)) selectedReport = ms[0].id;
-      const opts = ms.map(x => `<option value="${x.id}" ${x.id===selectedReport?"selected":""}>${esc(x.event||x.opp||"未命名")}${x.stage?" · "+esc(x.stage):""} · ${fmtDate(x.ts)}${x.winner?" · "+(x.winner==="me"?"勝":"負"):""}</option>`).join("");
+      const opts = ms.map(x => `<option value="${x.id}" ${x.id===selectedReport?"selected":""}>${esc(x.event||x.opp||tr("未命名","Untitled"))}${x.stage?" · "+esc(x.stage):""} · ${fmtDate(x.ts)}${x.winner?" · "+(x.winner==="me"?tr("勝","W"):tr("負","L")):""}</option>`).join("");
       picker.innerHTML = `<select onchange="selectedReport=this.value;renderReport()">${opts}</select>`;
       $("#reportCard").querySelector(".btn-row").style.display = "grid";
       const m = ms.find(x=>x.id===selectedReport);
@@ -1639,108 +1651,110 @@
     function pct(v) { return v == null ? "–" : Math.round(v * 100) + "%"; }
     function coachTips(m, r) {
       const tips = [];
-      if (r.dfRate != null && r.dfRate > 0.12) tips.push("今日雙誤偏高，建議放慢發球節奏。");
-      if (r.serveInPct != null && r.serveInPct < 0.55) tips.push("一發入框率偏低，可降低力度換穩定性。");
-      if (r.spinRate != null && r.spinRate < 0.5) tips.push("旋球成功率偏低，多練習穩定控拍。");
-      if (r.holdPct != null && r.holdPct < 0.5) tips.push("保住發球局偏低，發球係重點練嘅方向。");
-      if (r.breakPct != null && r.breakPct < 0.3) tips.push("破發把握唔夠，接發多啲主動。");
-      if (r.pointRate != null && r.pointRate >= 0.55) tips.push("得分力保持得唔錯。");
-      if (hasNervousStart(m.seg)) tips.push("開局有緊張訊號，下次提早熱身。");
-      if (!tips.length) tips.push("整體表現平均，繼續累積數據睇趨勢。");
+      if (r.dfRate != null && r.dfRate > 0.12) tips.push(tr("今日雙誤偏高，建議放慢發球節奏。","Double faults were high today — slow the serve rhythm."));
+      if (r.serveInPct != null && r.serveInPct < 0.55) tips.push(tr("一發入框率偏低，可降低力度換穩定性。","First-serve in rate was low — trade power for consistency."));
+      if (r.spinRate != null && r.spinRate < 0.5) tips.push(tr("旋球成功率偏低，多練習穩定控拍。","Spin success was low — practise steady racket control."));
+      if (r.holdPct != null && r.holdPct < 0.5) tips.push(tr("保住發球局偏低，發球係重點練嘅方向。","Hold-serve rate was low — serving is the priority to train."));
+      if (r.breakPct != null && r.breakPct < 0.3) tips.push(tr("破發把握唔夠，接發多啲主動。","Break chances were missed — be more aggressive on return."));
+      if (r.pointRate != null && r.pointRate >= 0.55) tips.push(tr("得分力保持得唔錯。","Point-winning was solid — keep it up."));
+      if (hasNervousStart(m.seg)) tips.push(tr("開局有緊張訊號，下次提早熱身。","Early nerves noted — warm up earlier next time."));
+      if (!tips.length) tips.push(tr("整體表現平均，繼續累積數據睇趨勢。","Overall steady — keep logging to see your trend."));
       return tips;
     }
     function buildReportText(m) {
       const r = rates(m), or = oppRates(m);
       const L = [];
-      L.push("TENNIS COUNTER · 比賽報告");
+      const dl = dateLoc();
+      L.push(tr("TENNIS COUNTER · 比賽報告","TENNIS COUNTER · MATCH REPORT"));
       L.push("════════════════════════════");
-      L.push(`球手：${data.player || "（未設定）"}${m.playerAge ? "　年齡 " + m.playerAge : ""}`);
-      L.push(`日期：${new Date(m.ts).toLocaleString("zh-Hant-HK")}`);
-      L.push(`賽事：${m.event || "—"}`);
-      L.push(`階段：${m.stage || "—"}${m.division ? "　組別：" + m.division : ""}`);
-      L.push(`對手：${m.opp || "未命名"}（慣用手：${oppHandLabel(m.oppHand)}）`);
-      if (m.st.oAce) L.push(`對手 Ace：${m.st.oAce} 次`);
-      L.push(`對手亂Call：Out ${m.oppBadOut || 0} 次 ／ 分數 ${m.oppBadScore || 0} 次`);
-      L.push(`模式：${m.quick ? "快速計數" : (fmtName[m.fmtKey] || "—")}`);
+      L.push(kv(tr("球手","Player"), (data.player || tr("（未設定）","(not set)")) + (m.playerAge ? tr("　年齡 ","  ·  Age ") + m.playerAge : "")));
+      L.push(kv(tr("日期","Date"), new Date(m.ts).toLocaleString(dl)));
+      L.push(kv(tr("賽事","Event"), m.event || "—"));
+      L.push(kv(tr("階段","Stage"), (m.stage || "—") + (m.division ? tr("　組別：","  ·  Division: ") + m.division : "")));
+      L.push(kv(tr("對手","Opponent"), (m.opp || tr("未命名","unnamed")) + tr("（慣用手："," (hand: ") + oppHandLabel(m.oppHand) + tr("）",")")));
+      if (m.st.oAce) L.push(kv(tr("對手 Ace","Opponent aces"), m.st.oAce + tr(" 次","")));
+      L.push(kv(tr("對手亂Call","Opponent bad calls"), "Out " + (m.oppBadOut || 0) + tr(" 次 ／ 分數 ","  ·  score ") + (m.oppBadScore || 0) + tr(" 次","")));
+      L.push(kv(tr("模式","Format"), m.quick ? tr("快速計數","Quick count") : (fmtLabel(m.fmtKey) || "—")));
       L.push("");
-      L.push("「"+(data.lang==="en"?"Score / Result":"比數／結果")+"」");
-      if (m.quick) L.push(`總得分：${m.st.ptWon}–${m.st.ptLost}`);
-      else { L.push(`比數：${scoreLine(m)}`); L.push(`結果：${m.winner ? (m.winner === "me" ? "你贏" : "對手贏") : "未完場"}`); scoreDetailText(m).forEach(x => L.push(x)); }
+      L.push(tr("「比數／結果」","[Score / Result]"));
+      if (m.quick) L.push(kv(tr("總得分","Total points"), m.st.ptWon + "–" + m.st.ptLost));
+      else { L.push(kv(tr("比數","Score"), scoreLine(m))); L.push(kv(tr("結果","Result"), m.winner ? (m.winner === "me" ? tr("你贏","You won") : tr("對手贏","Opponent won")) : tr("未完場","Unfinished"))); scoreDetailText(m).forEach(x => L.push(x)); }
       L.push("");
-      L.push("「"+(data.lang==="en"?"Data":"數據")+"」");
+      L.push(tr("「數據」","[Data]"));
       if (viewMode === "opp") {
-        L.push(`得分率：${pct(or.pointRate)}`);
-        L.push(`一發入框率：${pct(or.serveInPct)}`);
-        L.push(`雙誤率：${pct(or.dfRate)}`);
-        L.push(`旋球成功率：${pct(or.spinRate)}`);
-        L.push(`保住發球局：${pct(or.holdPct)}`);
-        L.push(`破發成功率：${pct(or.breakPct)}`);
-        L.push(`破發點轉化：${pct(or.brkConv)}`);
+        L.push(kv(ml("pt"), pct(or.pointRate)));
+        L.push(kv(ml("first"), pct(or.serveInPct)));
+        L.push(kv(ml("df"), pct(or.dfRate)));
+        L.push(kv(ml("spin"), pct(or.spinRate)));
+        L.push(kv(ml("hold"), pct(or.holdPct)));
+        L.push(kv(ml("brk"), pct(or.breakPct)));
+        L.push(kv(ml("brkPt"), pct(or.brkConv)));
       } else if (viewMode === "cmp") {
-        L.push(`得分率：我 ${pct(r.pointRate)} / 對手 ${pct(or.pointRate)}`);
-        L.push(`旋球成功率：我 ${pct(r.spinRate)} / 對手 ${pct(or.spinRate)}`);
-        L.push(`保住發球局：我 ${pct(r.holdPct)} / 對手 ${pct(or.holdPct)}`);
-        L.push(`破發成功率：我 ${pct(r.breakPct)} / 對手 ${pct(or.breakPct)}`);
+        L.push(kv(ml("pt"), tr("我","Me") + " " + pct(r.pointRate) + " / " + tr("對手","Opp") + " " + pct(or.pointRate)));
+        L.push(kv(ml("spin"), tr("我","Me") + " " + pct(r.spinRate) + " / " + tr("對手","Opp") + " " + pct(or.spinRate)));
+        L.push(kv(ml("hold"), tr("我","Me") + " " + pct(r.holdPct) + " / " + tr("對手","Opp") + " " + pct(or.holdPct)));
+        L.push(kv(ml("brk"), tr("我","Me") + " " + pct(r.breakPct) + " / " + tr("對手","Opp") + " " + pct(or.breakPct)));
       } else if (viewMode === "avg") {
         const av = avgRates(data.matches);
-        L.push(`平均得分率：${pct(av.pointRate)}`);
-        L.push(`平均一發入框率：${pct(av.serveInPct)}`);
-        L.push(`平均雙誤率：${pct(av.dfRate)}`);
-        L.push(`平均旋球成功率：${pct(av.spinRate)}`);
-        L.push(`平均保住發球局：${pct(av.holdPct)}`);
-        L.push(`平均破發成功率：${pct(av.breakPct)}`);
+        L.push(kv(tr("平均","Average ") + ml("pt"), pct(av.pointRate)));
+        L.push(kv(tr("平均","Average ") + ml("first"), pct(av.serveInPct)));
+        L.push(kv(tr("平均","Average ") + ml("df"), pct(av.dfRate)));
+        L.push(kv(tr("平均","Average ") + ml("spin"), pct(av.spinRate)));
+        L.push(kv(tr("平均","Average ") + ml("hold"), pct(av.holdPct)));
+        L.push(kv(tr("平均","Average ") + ml("brk"), pct(av.breakPct)));
       } else if (m.quick) {
-        L.push(`得分率：${pct(r.pointRate)}`);
-        L.push(`一發入框率：${pct(r.serveInPct)}`);
-        L.push(`雙誤率：${pct(r.dfRate)}`);
-        L.push(`旋球成功率：${pct(r.spinRate)}`);
-        L.push(`Ace：${m.st.aces}　致勝球：${m.st.winner}　非受迫失誤：${m.st.ufe}`);
+        L.push(kv(ml("pt"), pct(r.pointRate)));
+        L.push(kv(ml("first"), pct(r.serveInPct)));
+        L.push(kv(ml("df"), pct(r.dfRate)));
+        L.push(kv(ml("spin"), pct(r.spinRate)));
+        L.push(kv(tr("Ace","Aces"), m.st.aces) + tr("　致勝球：","  ·  Winners: ") + m.st.winner + tr("　非受迫失誤：","  ·  Unforced errors: ") + m.st.ufe);
       } else {
-        L.push(`得分率：${pct(r.pointRate)}`);
-        L.push(`一發入框率：${pct(r.serveInPct)}`);
-        L.push(`雙誤率：${pct(r.dfRate)}`);
-        L.push(`旋球成功率：${pct(r.spinRate)}`);
-        L.push(`保住發球局：${pct(r.holdPct)}`);
-        L.push(`破發成功率：${pct(r.breakPct)}`);
-        L.push(`破發點轉化：${pct(r.brkConv)}`);
+        L.push(kv(ml("pt"), pct(r.pointRate)));
+        L.push(kv(ml("first"), pct(r.serveInPct)));
+        L.push(kv(ml("df"), pct(r.dfRate)));
+        L.push(kv(ml("spin"), pct(r.spinRate)));
+        L.push(kv(ml("hold"), pct(r.holdPct)));
+        L.push(kv(ml("brk"), pct(r.breakPct)));
+        L.push(kv(ml("brkPt"), pct(r.brkConv)));
       }
       L.push("");
-      L.push("「"+(data.lang==="en"?"Coach Ray":"教練 Ray 評語")+"」");
+      L.push(tr("「教練 Ray 評語」","[Coach Ray]"));
       coachTips(m, r).forEach(t => L.push("· " + t));
       L.push("");
-      L.push("「"+(data.lang==="en"?"Next goal":"下場目標")+"」");
+      L.push(tr("「下場目標」","[Next goal]"));
       L.push(data.nextNote || "—");
-      if (data.nextMatch) L.push(`下場日期：${new Date(data.nextMatch).toLocaleString("zh-Hant-HK")}`);
+      if (data.nextMatch) L.push(kv(tr("下場日期","Next date"), new Date(data.nextMatch).toLocaleString(dl)));
       return L.join("\n");
     }
     function buildReportHTML(m) {
       const r = rates(m), or = oppRates(m);
       const av = avgRates(data.matches);
       const row = (k, v) => `<div class="r-row"><span class="k">${k}</span><span class="v">${v}</span></div>`;
+      const avgLbl = (k) => tr("平均","Average ") + ml(k);
       const dataRows = viewMode === "opp"
-        ? row("得分率", pct(or.pointRate)) + row("一發入框率", pct(or.serveInPct)) + row("雙誤率", pct(or.dfRate)) + row("旋球成功率", pct(or.spinRate)) + row("保住發球局", pct(or.holdPct)) + row("破發成功率", pct(or.breakPct)) + row("破發點轉化", pct(or.brkConv))
+        ? row(ml("pt"), pct(or.pointRate)) + row(ml("first"), pct(or.serveInPct)) + row(ml("df"), pct(or.dfRate)) + row(ml("spin"), pct(or.spinRate)) + row(ml("hold"), pct(or.holdPct)) + row(ml("brk"), pct(or.breakPct)) + row(ml("brkPt"), pct(or.brkConv))
         : viewMode === "avg"
-          ? row("平均得分率", pct(av.pointRate)) + row("平均一發入框率", pct(av.serveInPct)) + row("平均雙誤率", pct(av.dfRate)) + row("平均旋球成功率", pct(av.spinRate)) + row("平均保住發球局", pct(av.holdPct)) + row("平均破發成功率", pct(av.breakPct))
+          ? row(avgLbl("pt"), pct(av.pointRate)) + row(avgLbl("first"), pct(av.serveInPct)) + row(avgLbl("df"), pct(av.dfRate)) + row(avgLbl("spin"), pct(av.spinRate)) + row(avgLbl("hold"), pct(av.holdPct)) + row(avgLbl("brk"), pct(av.breakPct))
           : viewMode === "cmp"
-          ? row("得分率", `我 ${pct(r.pointRate)} / 對 ${pct(or.pointRate)}`) + row("旋球成功率", `我 ${pct(r.spinRate)} / 對 ${pct(or.spinRate)}`) + row("保住發球局", `我 ${pct(r.holdPct)} / 對 ${pct(or.holdPct)}`) + row("破發成功率", `我 ${pct(r.breakPct)} / 對 ${pct(or.breakPct)}`)
+          ? row(ml("pt"), `${tr("我","Me")} ${pct(r.pointRate)} / ${tr("對","vs")} ${pct(or.pointRate)}`) + row(ml("spin"), `${tr("我","Me")} ${pct(r.spinRate)} / ${tr("對","vs")} ${pct(or.spinRate)}`) + row(ml("hold"), `${tr("我","Me")} ${pct(r.holdPct)} / ${tr("對","vs")} ${pct(or.holdPct)}`) + row(ml("brk"), `${tr("我","Me")} ${pct(r.breakPct)} / ${tr("對","vs")} ${pct(or.breakPct)}`)
           : (m.quick
-              ? row("得分率", pct(r.pointRate)) + row("一發入框率", pct(r.serveInPct)) + row("雙誤率", pct(r.dfRate)) + row("旋球成功率", pct(r.spinRate)) + row("Ace", m.st.aces) + row("致勝球", m.st.winner)
-              : row("得分率", pct(r.pointRate)) + row("一發入框率", pct(r.serveInPct)) + row("雙誤率", pct(r.dfRate)) + row("旋球成功率", pct(r.spinRate)) + row("保住發球局", pct(r.holdPct)) + row("破發成功率", pct(r.breakPct)) + row("破發點轉化", pct(r.brkConv)));
+              ? row(ml("pt"), pct(r.pointRate)) + row(ml("first"), pct(r.serveInPct)) + row(ml("df"), pct(r.dfRate)) + row(ml("spin"), pct(r.spinRate)) + row("Ace", m.st.aces) + row(tr("致勝球","Winners"), m.st.winner)
+              : row(ml("pt"), pct(r.pointRate)) + row(ml("first"), pct(r.serveInPct)) + row(ml("df"), pct(r.dfRate)) + row(ml("spin"), pct(r.spinRate)) + row(ml("hold"), pct(r.holdPct)) + row(ml("brk"), pct(r.breakPct)) + row(ml("brkPt"), pct(r.brkConv)));
       const tips = coachTips(m, r).map(t => `<div class="r-tip">· ${t}</div>`).join("");
-      const sub = `${data.player || "球手"}${m.playerAge ? " · " + m.playerAge + "歲" : ""} · ${new Date(m.ts).toLocaleDateString("zh-Hant-HK")}`;
+      const sub = `${data.player || tr("球手","Player")}${m.playerAge ? " · " + m.playerAge + tr("歲"," yrs") : ""} · ${new Date(m.ts).toLocaleDateString(dateLoc())}`;
       return `<div class="r-title">TENNIS COUNTER</div>
         <div class="r-sub">${esc(sub)}</div>
-        <div class="r-sub">${esc(m.event || "—")}${m.stage ? " · " + esc(m.stage) : ""}${m.division ? " · " + esc(m.division) : ""} · 對手 ${esc(m.opp || "未命名")}</div>
-        <div class="r-sec"><h4>比數 / 結果</h4>${m.quick ? row("總得分", m.st.ptWon + "–" + m.st.ptLost) : row("比數", esc(scoreLine(m))) + row("結果", m.winner ? (m.winner === "me" ? "你贏" : "對手贏") : "未完場") + scoreDetailHTML(m)}</div>
-        <div class="r-sec"><h4>數據</h4>${dataRows}</div>
-        <div class="r-sec"><h4>對手數據</h4>
-          <div class="r-row"><span class="k">慣用手</span><span class="v">${oppHandLabel(m.oppHand)}</span></div>
-          ${m.st.oAce ? '<div class="r-row"><span class="k">Ace</span><span class="v">' + m.st.oAce + ' 次</span></div>' : ""}
-          <div class="r-row"><span class="k">亂Call「Out」</span><span class="v">${m.oppBadOut || 0} 次</span></div>
-          <div class="r-row"><span class="k">亂Call「分數」</span><span class="v">${m.oppBadScore || 0} 次</span></div>
+        <div class="r-sub">${esc(m.event || "—")}${m.stage ? " · " + esc(m.stage) : ""}${m.division ? " · " + esc(m.division) : ""} · ${tr("對手","Opponent")} ${esc(m.opp || tr("未命名","unnamed"))}</div>
+        <div class="r-sec"><h4>${tr("比數 / 結果","Score / Result")}</h4>${m.quick ? row(tr("總得分","Total points"), m.st.ptWon + "–" + m.st.ptLost) : row(tr("比數","Score"), esc(scoreLine(m))) + row(tr("結果","Result"), m.winner ? (m.winner === "me" ? tr("你贏","You won") : tr("對手贏","Opponent won")) : tr("未完場","Unfinished")) + scoreDetailHTML(m)}</div>
+        <div class="r-sec"><h4>${tr("數據","Data")}</h4>${dataRows}</div>
+        <div class="r-sec"><h4>${tr("對手數據","Opponent data")}</h4>
+          <div class="r-row"><span class="k">${tr("慣用手","Dominant hand")}</span><span class="v">${oppHandLabel(m.oppHand)}</span></div>
+          ${m.st.oAce ? '<div class="r-row"><span class="k">Ace</span><span class="v">' + m.st.oAce + tr(" 次","") + '</span></div>' : ""}
+          <div class="r-row"><span class="k">${tr("亂Call「Out」","Bad “Out”")}</span><span class="v">${m.oppBadOut || 0}${tr(" 次","")}</span></div>
+          <div class="r-row"><span class="k">${tr("亂Call「分數」","Bad score")}</span><span class="v">${m.oppBadScore || 0}${tr(" 次","")}</span></div>
         </div>
-        <div class="r-sec"><h4>教練 Ray 評語</h4><div class="r-verdict">${bestOf(m, r)}</div>${tips}</div>
-        <div class="r-sec"><h4>下場目標</h4><div class="r-row"><span class="k">目標</span><span class="v">${esc(data.nextNote || "—")}</span></div>${data.nextMatch ? '<div class="r-row"><span class="k">下場日期</span><span class="v">' + esc(new Date(data.nextMatch).toLocaleDateString("zh-Hant-HK")) + '</span></div>' : ""}</div>
+        <div class="r-sec"><h4>${tr("教練 Ray 評語","Coach Ray")}</h4><div class="r-verdict">${bestOf(m, r)}</div>${tips}</div>
+        <div class="r-sec"><h4>${tr("下場目標","Next goal")}</h4><div class="r-row"><span class="k">${tr("目標","Goal")}</span><span class="v">${esc(data.nextNote || "—")}</span></div>${data.nextMatch ? '<div class="r-row"><span class="k">' + tr("下場日期","Next date") + '</span><span class="v">' + esc(new Date(data.nextMatch).toLocaleDateString(dateLoc())) + '</span></div>' : ""}</div>
       `;
     }
 
@@ -1749,13 +1763,13 @@
       const m = data.matches.find(x=>x.id===selectedAnalysis) || data.matches.slice().sort((a,b)=>b.ts-a.ts)[0];
       if (!m) return;
       data.coachLang = target; save();
-      const btn = document.getElementById("coachBtn"); if (btn) { btn.textContent="生成中…"; btn.disabled=true; }
+      const btn = document.getElementById("coachBtn"); if (btn) { btn.textContent=tr("生成中…","Thinking…"); btn.disabled=true; }
       const out = document.getElementById("coachAI"); if (out) out.textContent = target==="zh" ? "等你一下，教練諗緊建議…" : "One moment, the coach is thinking…";
       gasGet({ api:"coach", style:data.coachStyle, lang:target, match: JSON.stringify(m) }).then(txt=>{
         if (out) out.textContent = (txt && typeof txt==="object" && txt.error) ? txt.error : (txt || "");
         const lr = document.getElementById("coachLangRow"); if (lr) lr.style.display="block";
-        const lb = document.getElementById("coachLangBtn"); if (lb) lb.textContent = target==="zh" ? "🌐 切換 English" : "🌐 切換 中文";
-        if (btn) { btn.textContent="🤖 AI 教練分析"; btn.disabled=false; }
+        const lb = document.getElementById("coachLangBtn"); if (lb) lb.textContent = target==="zh" ? "🌐 English" : tr("🌐 中文","🌐 Chinese");
+        if (btn) { btn.textContent=t("coach_btn"); btn.disabled=false; }
       });
     }
     function setCoachStyle(style) { data.coachStyle = style; save(); if (currentView==="analysis") renderAnalysis(); }
@@ -1764,24 +1778,24 @@
       const id = currentView==="report" ? selectedReport : (currentView==="analysis" ? selectedAnalysis : null);
       if (!id) return;
       const m = data.matches.find(x=>x.id===id); if (!m) return;
-      if (!confirm("確定刪除「"+(m.event||m.opp||"呢場")+"」？呢個動作唔可以復原。")) return;
+      if (!confirm(tr("確定刪除「"+(m.event||m.opp||"呢場")+"」？呢個動作唔可以復原。","Delete “"+(m.event||m.opp||"this match")+"”? This cannot be undone."))) return;
       data.matches = data.matches.filter(x=>x.id!==id);
       save(); gasGet({ api:"deleteMatch", id:id });
       const rest = data.matches.slice().sort((a,b)=>b.ts-a.ts);
       selectedAnalysis = rest.length ? rest[0].id : null; selectedReport = selectedAnalysis;
       if (currentView==="report") renderReport(); else if (currentView==="analysis") renderAnalysis();
-      toast("已刪除");
+      toast(tr("已刪除","Deleted"));
     }
 
     async function shareReport() {
       const text = $("#reportText").textContent;
-      try { if (navigator.share) { await navigator.share({ title:"TENNIS COUNTER 比賽報告", text }); return; } } catch(e){}
+      try { if (navigator.share) { await navigator.share({ title:tr("TENNIS COUNTER 比賽報告","TENNIS COUNTER Match Report"), text }); return; } } catch(e){}
       await copyReport();
     }
     async function copyReport() {
       const text = $("#reportText").textContent;
-      try { await navigator.clipboard.writeText(text); toast("已複製報告 ✓"); }
-      catch(e){ toast("複製失敗，請手動選取"); }
+      try { await navigator.clipboard.writeText(text); toast(tr("已複製報告 ✓","Report copied ✓")); }
+      catch(e){ toast(tr("複製失敗，請手動選取","Copy failed — select manually")); }
     }
     function renderNextGoal() {
       const g = $("#nextGoal"); let html = "";
@@ -1789,12 +1803,12 @@
         const diff = data.nextMatch - Date.now();
         const dd = Math.max(0, Math.floor(diff/86400000));
         html += `<div style="display:flex;align-items:center;gap:14px">
-          <div class="ring" style="--pct:100"><div><b>${dd>=1?dd+"日":diff>0?Math.floor(diff/3600000)+"時":"今"}</b></div></div>
-          <div><div class="muted" style="font-size:0.8rem">${new Date(data.nextMatch).toLocaleString("zh-Hant-HK")}</div>
-          <div style="font-weight:800">${data.nextNote || "保持水準"}</div></div>
+          <div class="ring" style="--pct:100"><div><b>${dd>=1?tr(dd+"日",dd+"d"):diff>0?tr(Math.floor(diff/3600000)+"時",Math.floor(diff/3600000)+"h"):tr("今","now")}</b></div></div>
+          <div><div class="muted" style="font-size:0.8rem">${new Date(data.nextMatch).toLocaleString(dateLoc())}</div>
+          <div style="font-weight:800">${data.nextNote || tr("保持水準","Keep your level")}</div></div>
         </div>`;
       } else {
-        html += `<p class="muted" style="margin:0">未設定。去首頁填返日期同目標。</p>`;
+        html += `<p class="muted" style="margin:0">${tr("未設定。去首頁填返日期同目標。","Not set. Add a date and goal on the Home screen.")}</p>`;
       }
       g.innerHTML = html;
     }
@@ -1805,7 +1819,7 @@
       document.documentElement.setAttribute("data-theme", t);
       const ico = document.getElementById("themeIco"), lbl = document.getElementById("themeLbl");
       if (ico) ico.textContent = t === "night" ? "🌙" : "☀️";
-      if (lbl) lbl.textContent = t === "night" ? "深 夜" : "日 間";
+      if (lbl) lbl.textContent = t === "night" ? tr("深 夜","Night") : tr("日 間","Day");
       const tg = document.getElementById("themeToggle"); if (tg) tg.setAttribute("aria-pressed", t === "night" ? "false" : "true");
       const meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute("content", t === "night" ? "#052326" : "#ffffff");
       try { localStorage.setItem("tb:theme", t); } catch (e) {}
@@ -1839,6 +1853,8 @@
       brand_sub:["網球表現追蹤 · 一鍵記賽","Tennis match tracker · tap to record"],
       hero_title:["今日打得點？","How did today go?"], cta_start:["開一場新比賽","Start a match"],
       setup_eyebrow:["快速設定","Quick setup"], player_name:["球手名字","Player name"], player_age:["球手年齡","Age"],
+      ph_player:["例如：小傑","e.g. Jay"], ph_age:["例如：10","e.g. 10"], ph_note:["例如：雙誤控制喺 5 次內","e.g. keep double faults under 5"],
+      ph_event:["例如：週末盃","e.g. Weekend Cup"], ph_opp:["例如：小明","e.g. Ming"], ph_stage:["例如：小組賽","e.g. Group stage"], ph_division:["例如：U12","e.g. U12"],
       next_match:["下一場比賽日期時間","Next match date & time"], next_note:["目標或備註","Goal or note"], save:["儲存設定","Save"],
       coach_says:["教練 Ray 的話","Coach Ray says"], recent:["最近比賽","Recent matches"],
       recent_empty:["未有記錄。去「記錄」開一場啦。","No matches yet. Go to Record."],
@@ -1848,6 +1864,20 @@
       rec_hand:["對手慣用手持拍","Opponent dominant hand"], hand_right:["右 手","Right"], hand_left:["左 手","Left"],
       rec_mode:["記分模式","Scoring mode"], mode_full:["完整計分","Full scoring"], mode_quick:["快速計數","Quick count"],
       rec_fmt:["賽制","Format"], rec_first:["邊個開波先?","Who serves first?"], me_lbl:["我","Me"], opp_lbl:["對手","Opponent"],
+      fmt_o_bo3ad:["3 盤 2 勝 · 全 Ad (正式) · 搶 7","Best of 3 · Full Ad (official) · Tiebreak 7"],
+      fmt_o_bo3noad:["3 盤 2 勝 · No Ad · 搶 7","Best of 3 · No-Ad · Tiebreak 7"],
+      fmt_o_bo5ad:["5 盤 3 勝 · 全 Ad (正式) · 搶 7","Best of 5 · Full Ad (official) · Tiebreak 7"],
+      fmt_o_bo5noad:["5 盤 3 勝 · No Ad · 搶 7","Best of 5 · No-Ad · Tiebreak 7"],
+      fmt_o_cn4:["國內制 · 一盤 4 局 · No Ad · 搶 7 一分決勝","Domestic · 4 games/set · No-Ad · Tiebreak 7 (sudden death)"],
+      fmt_o_cn6:["國內制 · 一盤 6 局 · No Ad · 搶 7 一分決勝","Domestic · 6 games/set · No-Ad · Tiebreak 7 (sudden death)"],
+      fmt_o_custom:["自訂","Custom"],
+      c_games:["每盤幾局先贏","Games to win a set"], c_games_hint:["例如：贏 6 局（即 6:6 打 tie break）","e.g. 6 games (tiebreak at 6:6)"],
+      c_sets:["全場幾多盤 (Best of)","Sets (best of)"], c_sets_hint:["0 或 1 = 單盤（唔顯示盤數）· 3 = 三盤兩勝 · 5 = 五盤三勝","0 or 1 = single set (no set count) · 3 = best of 3 · 5 = best of 5"],
+      c_tb:["Tie Break 分數","Tiebreak points"], c_tb_hint:["到呢分後要領先 2 分先贏（7:7 → 9:7）","Win by 2 after this score (7:7 → 9:7)"],
+      disclaim:["完整計分會自動推進 局數／盤數、處理 Deuce 同 Tie-break，並分辨「我發球／我接發」。","Full scoring auto-advances games/sets, handles Deuce and tiebreaks, and tracks serve/return."],
+      q_sec_score:["🎾 記分","🎾 Score"], q_sec_serve:["🎯 發球","🎯 Serve"], undo_lbl:["↩︎ 撤銷","↩︎ Undo"],
+      mood_hint:["喺某啲時刻（例如開局緊張）可以撳一下記低。","Tap any time to note how you feel (e.g. early nerves)."],
+      serve_title:["🎾 點解呢分","🎾 Record this point"],
       pts:["得分","Points"], lost:["失分","Points lost"], ace:["Ace","Ace"], winner_lbl:["致勝球","Winner"], ufe:["非受迫失誤","Unforced"],
       df:["雙誤","Double fault"], first_ok:["一發成功","1st serve in"], first_fault:["一發失誤","1st serve fault"],
       serve_i:["我發球","I serve"], serve_r:["我接發","I return"], win_pt:["我嬴呢分","I win point"], lose_pt:["我輸呢分","I lose point"],
@@ -1891,10 +1921,22 @@
     function setLang(l) { data.lang = l === "en" ? "en" : "zh"; save(); applyLang(); if (currentView === "home") renderHome(); if (currentView === "analysis") renderAnalysis(); if (currentView === "report") renderReport(); if (currentView === "record") renderRecord(); }
     function toggleLang() { setLang(data.lang === "zh" ? "en" : "zh"); }
     function updateLangBtn() { const b = document.getElementById("langLbl"); if (b) b.textContent = data.lang === "zh" ? "EN" : "中文"; }
+    const STAGE_OPTS = [["練習賽","Practice"],["友誼賽","Friendly"],["小組賽","Group stage"],["半準決賽","Quarter-final"],["準決賽","Semi-final"],["決賽","Final"]];
+    const DIV_OPTS = [["成人組","Adult"],["公開組","Open"]];
+    function fillDatalists() {
+      const si = data.lang === "en" ? 1 : 0;
+      const s = document.getElementById("stageList"); if (s) s.innerHTML = STAGE_OPTS.map(o => `<option value="${esc(o[si])}"></option>`).join("");
+      const d = document.getElementById("divisionList"); if (d) d.innerHTML = DIV_OPTS.map(o => `<option value="${esc(o[si])}"></option>`).join("");
+    }
     function applyLang() {
       document.documentElement.lang = data.lang === "en" ? "en" : "zh-Hant";
+      document.title = tr("TENNIS COUNTER · 網球表現追蹤","TENNIS COUNTER · Tennis match tracker");
       document.querySelectorAll("[data-i18n]").forEach(el => { el.textContent = t(el.getAttribute("data-i18n")); });
       document.querySelectorAll("[data-i18n-ph]").forEach(el => el.setAttribute("placeholder", t(el.getAttribute("data-i18n-ph"))));
+      fillDatalists();
+      const tt = document.getElementById("themeToggle"); if (tt) tt.setAttribute("aria-label", tr("切換日間／夜間模式","Toggle day/night mode"));
+      const nv = document.getElementById("nav"); if (nv) nv.setAttribute("aria-label", tr("主要導覽","Main navigation"));
+      const ft = document.querySelector(".footing"); if (ft) ft.setAttribute("aria-label", tr("標語","Tagline"));
       updateLangBtn();
     }
     applyTheme(theme);
