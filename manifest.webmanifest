@@ -1,0 +1,36 @@
+{
+  "id": "/",
+  "name": "TENNIS COUNTER · 網球表現追蹤",
+  "short_name": "TennisCounter",
+  "description": "一鍵記錄網球比賽，自動分析表現並生成教練報告。",
+  "lang": "zh-Hant-HK",
+  "dir": "ltr",
+  "start_url": "/?src=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "fullscreen", "minimal-ui"],
+  "orientation": "portrait",
+  "theme_color": "#000000",
+  "background_color": "#000000",
+  "categories": ["sports", "health", "productivity"],
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

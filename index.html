@@ -3,13 +3,36 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="theme-color" content="#ffffff" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="color-scheme" content="light dark" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="TennisCounter" />
+  <meta name="application-name" content="TennisCounter" />
+  <meta name="format-detection" content="telephone=no" />
   <title>TENNIS COUNTER · 網球表現追蹤</title>
-  <link rel="icon" href="/apple-touch-icon.png" />
-  <!-- Main Apple Touch Icon for iPhone Home Screen -->
+
+  <!-- Installable app -->
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/icon-192.png" sizes="192x192" type="image/png">
+  <!-- Home-screen icon (iOS ignores the manifest icons and uses this) -->
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <!-- Launch screens -->
+  <link rel="apple-touch-startup-image" media="screen and (device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3)" href="/splash/splash-1320x2868.png">
+  <link rel="apple-touch-startup-image" media="screen and (device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3)" href="/splash/splash-1206x2622.png">
+  <link rel="apple-touch-startup-image" media="screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)" href="/splash/splash-1179x2556.png">
+  <link rel="apple-touch-startup-image" media="screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)" href="/splash/splash-1290x2796.png">
+  <link rel="apple-touch-startup-image" media="screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)" href="/splash/splash-1170x2532.png">
+  <link rel="apple-touch-startup-image" media="screen and (device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3)" href="/splash/splash-1284x2778.png">
+  <link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" href="/splash/splash-1125x2436.png">
+  <link rel="apple-touch-startup-image" media="screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)" href="/splash/splash-1242x2688.png">
+  <link rel="apple-touch-startup-image" media="screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)" href="/splash/splash-828x1792.png">
+  <link rel="apple-touch-startup-image" media="screen and (device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3)" href="/splash/splash-1242x2208.png">
+  <link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" href="/splash/splash-750x1334.png">
+  <link rel="apple-touch-startup-image" media="screen and (device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" href="/splash/splash-640x1136.png">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap" rel="stylesheet">
@@ -97,7 +120,7 @@
     }
 
     * { box-sizing: border-box; }
-    html, body { height: 100%; overflow-x: clip; }
+    html, body { height: 100%; overflow-x: clip; -webkit-tap-highlight-color: transparent; }
     body {
       margin: 0;
       font-family: var(--font-body);
@@ -215,7 +238,7 @@
       background: var(--canvas);
       border-top: 1px solid var(--border-2);
       display: grid; grid-template-columns: repeat(4, 1fr);
-      padding: 6px 8px calc(env(safe-area-inset-bottom) + 6px);
+      padding: 6px 8px;
     }
     #nav button {
       appearance: none; border: 0; background: transparent; cursor: pointer;
@@ -232,8 +255,23 @@
       background: #000000; color: #ffffff;
       display: flex; align-items: center;
       min-height: var(--footer-h);
-      padding: 6px 18px 8px;
+      padding: 6px 18px calc(env(safe-area-inset-bottom) + 8px);
       font-size: 0.82rem; font-weight: 700; letter-spacing: 0.12em;
+    }
+
+    /* ---------- Installed-app polish (added to iPhone Home Screen) ---------- */
+    button, .chip, #nav button, .theme-toggle, .seg .chip {
+      -webkit-touch-callout: none; -webkit-user-select: none; user-select: none;
+    }
+    @media (display-mode: standalone), (display-mode: fullscreen) {
+      html, body { overscroll-behavior-y: none; }
+      /* iOS draws the clock/battery in white over the app, so keep that strip
+         on-brand black — it mirrors the black "Carpi Diem" strip at the foot. */
+      body::before {
+        content: ""; position: fixed; top: 0; left: 0; right: 0;
+        height: env(safe-area-inset-top); background: #000000;
+        z-index: 60; pointer-events: none;
+      }
     }
 
     /* ---------- Home hero ---------- */
@@ -415,6 +453,28 @@
       z-index: 50; white-space: nowrap;
     }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ---------- "Add to Home Screen" hint (iOS Safari only, dismissible) ---------- */
+    .a2hs {
+      position: fixed; z-index: 45;
+      left: 12px; right: 12px; max-width: 516px; margin: 0 auto;
+      bottom: calc(env(safe-area-inset-bottom) + var(--footer-h) + 84px);
+      display: flex; align-items: center; gap: 10px;
+      background: var(--carbon); color: #ffffff;
+      border-radius: var(--r-m); padding: 10px 12px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.26);
+      animation: fade 260ms var(--ease-out);
+    }
+    .a2hs[hidden] { display: none; }
+    .a2hs-ic { font-size: 1.35rem; line-height: 1; flex: none; }
+    .a2hs-tx { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+    .a2hs-tx b { font-size: 0.86rem; font-weight: 800; letter-spacing: -0.01em; }
+    .a2hs-tx i { font-style: normal; font-size: 0.71rem; line-height: 1.35; color: rgba(255,255,255,0.72); }
+    .a2hs-x {
+      appearance: none; border: 0; flex: none; cursor: pointer;
+      width: 26px; height: 26px; border-radius: 999px;
+      background: rgba(255,255,255,0.16); color: #ffffff; font-size: 0.78rem; line-height: 1;
+    }
     .disclaim { text-align: center; color: var(--muted); font-size: 0.72rem; padding: 4px 16px 0; }
     .result-banner { text-align: center; font-family: var(--font-display); font-weight: 900; font-size: 1.4rem; padding: 8px 0 4px; letter-spacing: -0.02em; }
     .result-banner.win { color: var(--white); }
@@ -720,6 +780,14 @@
       <button data-nav="report"><span class="ic">📄</span><span data-i18n="nav_report">報告</span></button>
     </nav>
     <div class="footing" aria-label="標語">Carpi Diem</div>
+  </div>
+  <div class="a2hs" id="a2hs" hidden>
+    <span class="a2hs-ic">🎾</span>
+    <span class="a2hs-tx">
+      <b data-i18n="a2hs_t">加到主畫面</b>
+      <i data-i18n="a2hs_d">撳「分享 ⬆️」再揀「加入主畫面」，就可以全螢幕 + 離線用</i>
+    </span>
+    <button class="a2hs-x" type="button" onclick="dismissA2HS()" aria-label="關閉／Close">✕</button>
   </div>
   <div class="toast" id="toast"></div>
 
@@ -1856,6 +1924,8 @@
     /* ---------- Bilingual (i18n) ---------- */
     const I18N = {
       nav_home:["首頁","Home"], nav_record:["記錄","Record"], nav_analysis:["分析","Analysis"], nav_report:["報告","Report"],
+      a2hs_t:["加到主畫面","Add to Home Screen"],
+      a2hs_d:["撳「分享 ⬆️」再揀「加入主畫面」，就可以全螢幕 + 離線用","Tap Share ⬆️, then \u201cAdd to Home Screen\u201d for full screen + offline play"],
       brand_sub:["網球表現追蹤 · 一鍵記賽","Tennis match tracker · tap to record"],
       hero_title:["今日打得點？","How did today go?"], cta_start:["開一場新比賽","Start a match"],
       setup_eyebrow:["快速設定","Quick setup"], player_name:["球手名字","Player name"], player_age:["球手年齡","Age"],
@@ -1952,6 +2022,31 @@
     renderHome();
     syncFromServer();
     setInterval(() => { if (currentView === "home") renderCountdown(); }, 60000);
+
+    /* ---------- Installed app: offline shell + "Add to Home Screen" nudge ---------- */
+    const isStandalone = () => (window.navigator.standalone === true) ||
+      (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches);
+    const isIOSSafari = () => /iP(hone|ad|od)/.test(navigator.userAgent) &&
+      /Safari/.test(navigator.userAgent) && !/CriOS|FxiOS|EdgiOS|OPiOS/.test(navigator.userAgent);
+
+    if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol)) {
+      window.addEventListener("load", () => { navigator.serviceWorker.register("/sw.js").catch(() => {}); });
+    }
+
+    function dismissA2HS() {
+      const el = document.getElementById("a2hs"); if (el) el.hidden = true;
+      try { localStorage.setItem("tb:a2hs", "off"); } catch (e) {}
+    }
+    function initA2HS() {
+      const el = document.getElementById("a2hs"); if (!el) return;
+      let seen = null; try { seen = localStorage.getItem("tb:a2hs"); } catch (e) {}
+      if (seen === "off" || isStandalone() || !isIOSSafari()) return;
+      el.hidden = false;
+    }
+    initA2HS();
+
+    window.addEventListener("offline", () => toast(tr("離線模式 · 一樣記到落呢部 iPhone", "Offline · still saving on this iPhone")));
+    window.addEventListener("online", () => toast(tr("已重新連線", "Back online")));
   </script>
 </body>
 </html>
