@@ -92,6 +92,14 @@
     <h3>雲端同步（可選）</h3>
     <p>如果你使用同步功能，你嘅比賽紀錄會上傳到同一個 Google Sheets 資料庫，令你喺網頁版同手機版都睇到同一份紀錄。呢個功能完全由你選擇使用。</p>
 
+    <h3>天氣（可選）</h3>
+    <p>當你撳「顯示今日天氣」時，app 會向你嘅裝置要求「使用期間」嘅位置權限，用嚟取得你所在位置嘅<strong>粗略座標</strong>（精確度約 1 公里），再向 <strong>Open-Meteo</strong> 查詢當地氣溫、濕度同風速。</p>
+    <ul>
+      <li>座標<strong>唔會</strong>儲存喺我哋嘅伺服器</li>
+      <li>座標<strong>唔會</strong>同 AI 教練請求一齊傳送 —— 教練只會收到「氣溫 23°C、濕度 89%」呢類數字</li>
+      <li>你可以隨時喺 iOS 設定 → 私隱與安全性 → 定位服務 關閉</li>
+    </ul>
+
     <h2>2. 我哋唔會做嘅事</h2>
     <ul>
       <li>唔會收集你嘅姓名、電郵、電話號碼或位置</li>
@@ -130,6 +138,13 @@
     <p class="en">TENNIS COUNTER requires no sign-up and contains no advertising or analytics SDKs. Everything you enter — player names, match scores, statistics — is stored only in local storage on your device.</p>
     <p class="en"><strong>AI coach.</strong> When you tap “Get advice”, that match’s <em>statistics</em> (scores and rates, not your name or contact details) are sent to our server and forwarded to third-party AI providers to generate coaching advice: <strong>SiliconFlow</strong> (China), with the backend hosted on <strong>Google Apps Script / Google Sheets</strong>. These providers process the single request and do not build a profile of you.</p>
     <p class="en"><strong>Optional cloud sync.</strong> If you enable sync, your match records are uploaded to the same Google Sheets database so your web and iPhone versions show the same history. This is entirely opt-in.</p>
+
+    <p class="en"><strong>Weather (optional).</strong> When you tap “Show today’s weather”, the app asks for “While Using” location access so it can read the <strong>approximate coordinates</strong> (about 1 km precision) and query <strong>Open-Meteo</strong> for temperature, humidity and wind.</p>
+    <ul class="en">
+      <li>Coordinates are <strong>never</strong> stored on our servers</li>
+      <li>Coordinates are <strong>never</strong> sent to the AI coach — it only receives numbers such as “23°C, 89% humidity”</li>
+      <li>You can turn location off any time in iOS Settings → Privacy &amp; Security → Location Services</li>
+    </ul>
 
     <h3 class="en">What we never do</h3>
     <ul class="en">
