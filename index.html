@@ -1841,7 +1841,6 @@
         if (btn) { btn.textContent=t("coach_btn"); btn.disabled=false; }
       });
     }
-    function setCoachStyle(style) { data.coachStyle = style; save(); if (currentView==="analysis") renderAnalysis(); }
     function toggleCoachLang() { getCoach(data.coachLang==="zh" ? "en" : "zh"); }
     function deleteMatchSel() {
       const id = currentView==="report" ? selectedReport : (currentView==="analysis" ? selectedAnalysis : null);
