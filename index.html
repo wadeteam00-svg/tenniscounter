@@ -794,7 +794,7 @@
           <button class="btn btn-primary" onclick="shareReport()" data-i18n="share">📤 分享</button>
           <button class="btn btn-ghost" onclick="copyReport()" data-i18n="copy">📋 複製</button>
         </div>
-        <button class="btn btn-primary btn-block" style="margin-top:10px" onclick="openScoreImage()" data-i18n="share_img">🖼️ 分享賽果圖</button>
+        <button class="btn btn-primary btn-block" style="margin-top:10px" id="shareImgBtn" onclick="openScoreImage()" data-i18n="share_img">🖼️ 分享賽果圖</button>
         <button class="btn btn-clay btn-block" style="margin-top:10px" onclick="deleteMatchSel()" data-i18n="del_match">🗑️ 刪除此場</button>
       </div>
       <div class="card" style="margin-top:16px">
@@ -1749,6 +1749,7 @@
         $("#reportHTML").innerHTML = `<div class="muted" style="padding:12px">${tr("打一場比賽之後，呢度會自動生成可以分享嘅報告。","After a match, a shareable report is generated here.")}</div>`;
         $("#reportText").textContent = tr("未有比賽報告。","No match reports yet.");
         $("#reportCard").querySelector(".btn-row").style.display = "none";
+        $("#shareImgBtn").style.display = "none";
         renderNextGoal();
         return;
       }
@@ -1756,6 +1757,7 @@
       const opts = ms.map(x => `<option value="${x.id}" ${x.id===selectedReport?"selected":""}>${esc(x.event||x.opp||tr("未命名","Untitled"))}${x.stage?" · "+esc(x.stage):""} · ${fmtDate(x.ts)}${x.winner?" · "+(x.winner==="me"?tr("勝","W"):tr("負","L")):""}</option>`).join("");
       picker.innerHTML = `<select onchange="selectedReport=this.value;renderReport()">${opts}</select>`;
       $("#reportCard").querySelector(".btn-row").style.display = "grid";
+      $("#shareImgBtn").style.display = "";
       const m = ms.find(x=>x.id===selectedReport);
       $("#reportToggle").innerHTML = viewToggleHTML();
       $("#reportHTML").innerHTML = buildReportHTML(m);
