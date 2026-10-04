@@ -1669,10 +1669,6 @@
         <div class="who"><div class="avatar">🎾</div><div><div class="name">${tr("教練 Ray","Coach Ray")}</div><div class="role">${tr("你的球場軍師 · 根據數據俾建議","Your courtside strategist · advice from your data")}</div></div></div>
         <div class="verdict">${best ? tr("今日最佳：","Best today: ") + best : bestNote(m)}</div>
         <ul>${pts.map(p=>`<li>${p}</li>`).join("")}</ul>
-        <div class="seg" style="margin:12px 0 10px">
-          <button class="chip ${data.coachStyle==="west"?"":"selected"}" onclick="setCoachStyle('asia')">🇭🇰 ${tr("亞洲教練","Asian coach")}</button>
-          <button class="chip ${data.coachStyle==="west"?"selected":""}" onclick="setCoachStyle('west')">🌍 ${tr("外國教練","Western coach")}</button>
-        </div>
         <button class="btn btn-primary btn-block" id="coachBtn" onclick="getCoach()">${t("coach_btn")}</button>
         <div id="coachLangRow" style="display:none;margin-top:10px"><button class="btn btn-ghost btn-block btn-sm" id="coachLangBtn" onclick="toggleCoachLang()">${data.coachLang==="zh" ? "🌐 English" : tr("🌐 中文","🌐 Chinese")}</button></div>
         <div id="coachAI" style="margin-top:10px;white-space:pre-wrap;font-size:0.9rem;line-height:1.6"></div>
